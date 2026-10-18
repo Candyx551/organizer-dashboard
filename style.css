@@ -938,3 +938,103 @@ body {
         padding: 20px;
     }
 }
+
+/* --- PERFEKTES MODERNES SPOTIFY WIDGET --- */
+.spotify-player-modern, .media-widget {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+}
+
+/* Cover quadratisch und nicht zu groß mit abgerundeten Ecken */
+.spotify-cover-wrapper, #spotifyCoverImg, .spotify-widget-img {
+    width: 160px !important;
+    height: 160px !important;
+    aspect-ratio: 1 / 1;
+    border-radius: 16px;
+    object-fit: cover;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    margin: 0 auto;
+}
+
+/* Song-Titel und Interpret sauber zentriert */
+.spotify-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    gap: 4px;
+}
+
+.track-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.track-artist {
+    font-size: 0.8rem;
+    color: var(--text-muted, #94a3b8);
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Steuerungs-Buttons (Play, Vor, Zurück, Like) in einer schönen Reihe darunter */
+.spotify-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+    margin-top: 4px;
+}
+
+.control-primary, .control-secondary, .like-icon {
+    font-size: 1.1rem;
+    color: var(--text-muted, #94a3b8);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.control-primary:hover, .control-secondary:hover {
+    color: #ffffff;
+    transform: scale(1.1);
+}
+
+.like-icon:hover {
+    color: #1ed760;
+}
+
+/* Runder Play/Pause Button in der Mitte */
+.play-pause-btn {
+    width: 44px;
+    height: 44px;
+    background-color: #1ed760 !important;
+    color: #000000 !important;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    box-shadow: 0 4px 15px rgba(30, 215, 96, 0.4);
+}
+
+.play-pause-btn:hover {
+    transform: scale(1.08);
+    background-color: #1fdf64 !important;
+}
