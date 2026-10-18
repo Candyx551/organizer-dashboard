@@ -1225,3 +1225,64 @@ body {
     border-color: var(--accent-color) !important;
     box-shadow: 0 0 15px var(--accent-color) !important;
 }
+
+/* --- RESPONSIVE MODALS & UI ANPASSUNGEN --- */
+
+/* Verhindert, dass Modals über den Bildschirm hinausschießen und macht sie scrollbar */
+.modal-overlay, 
+.modal-container, 
+#eventModal, 
+#shortcutModal, 
+#financeModal, 
+#transactionListModal,
+#settingsModal {
+    /* Falls deine Modals als Overlay aufgebaut sind */
+}
+
+/* Universelles Styling für alle Pop-up Modals, damit sie auf Handys & kleinen Laptops nie abgeschnitten werden */
+.modal, .modal-content, .modal-overlay.active {
+    max-height: 90vh; /* Maximal 90% der Bildschirmhöhe */
+    overflow-y: auto;  /* Erzeugt automatisch einen Scrollbalken, wenn der Inhalt zu lang ist */
+    box-sizing: border-box;
+}
+
+/* Speziell für Modal-Inhalte, damit Formulare auf kleinen Displays atmen können */
+.modal-card, .modal-box {
+    width: 100%;
+    max-width: 500px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 20px;
+    margin: auto;
+}
+
+/* --- MEDIA QUERY FÜR SMARTPHONES & KLEINE LAPTOPS --- */
+@media screen and (max-width: 768px) {
+    /* Dashboard-Grid auf kleinen Bildschirmen untereinander anordnen */
+    .dashboard-grid, .main-layout {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding: 10px;
+    }
+
+    /* Sidebar für Smartphones kompakter machen oder ausblenden */
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    /* Widgets passen sich der vollen Bildschirmbreite an */
+    .widget-card, .shortcut-card {
+        width: 100% !important;
+    }
+
+    /* Modals nehmen auf dem Handy fast den ganzen Bildschirm ein, bleiben aber bedienbar */
+    .modal-card, .modal-box {
+        width: 95vw;
+        max-height: 90vh;
+        margin: 10px;
+        padding: 15px;
+    }
+}
