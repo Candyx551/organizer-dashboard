@@ -1286,3 +1286,59 @@ body {
         padding: 15px;
     }
 }
+
+/* --- PERFEKTE MODAL-ANPASSUNG FÜR ALLE BILDSCHIRME --- */
+
+/* Der Hintergrund des Modals füllt den Bildschirm und zentriert den Inhalt */
+.modal-overlay, #eventModal, #shortcutModal, #financeModal, #transactionListModal, #settingsModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(5, 11, 20, 0.8);
+    display: none; /* Wird per .active auf flex geschaltet */
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Wenn das Modal aktiv ist */
+.modal-overlay.active, #eventModal.active, #shortcutModal.active, #financeModal.active, #transactionListModal.active, #settingsModal.active {
+    display: flex;
+}
+
+/* Der eigentliche Inhalt / die Box des Modals */
+.modal-content, .modal-card, .modal-box, .calendar-modal-content {
+    background: #0f172a; /* Passe das an deine Farbvariante an */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 85vh; /* Wichtig: Lässt Platz zum Rand, damit es nie abgeschnitten wird */
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Erzeugt einen sauberen Scrollbalken IM Modal, falls der Bildschirm zu klein ist */
+    padding: 24px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+    box-sizing: border-box;
+}
+
+/* Speziell für Formular-Inhalte im Modal */
+.modal-content form, .modal-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Die Button-Leiste unten im Modal bleibt sauber ausgerichtet */
+.modal-actions, .modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
