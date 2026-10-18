@@ -1167,8 +1167,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- GLOBALE MODAL-STEUERUNG (ESC-TASTE) ---
-    document.addEventListener('keydown', (e) => {
+    window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
+            // Einstellungs-Modal schließen
+            if (settingsModal && settingsModal.classList.contains('active')) {
+                settingsModal.classList.remove('active');
+            }
             // Termin-Modal
             if (eventModal && eventModal.classList.contains('active')) {
                 eventModal.classList.remove('active');
@@ -1359,6 +1363,149 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- VOLLSTÄNDIGE SPRACH-UMSCHALTUNG (DE / EN) ---
+    const translations = {
+        de: {
+            welcome: "Hallo, ",
+            subtitle: "Hier ist dein heutiger Überblick.",
+            langBtn: "🌐 EN",
+            navDashboard: "Dashboard",
+            navShortcuts: "Shortcuts",
+            navUni: "Uni & Termine",
+            navToday: "Heutige Termine",
+            navSpotify: "Spotify Live",
+            navWeather: "Wetter",
+            navFinance: "Finanzen",
+            navNotes: "Notizen",
+            navStocks: "Aktien",
+            navSettings: "Einstellungen",
+            shortcutsTitle: "Browser Shortcuts",
+            addShortcut: "+ Hinzufügen",
+            uniTitle: "Uni & Termine",
+            viewWeek: "Woche",
+            viewMonth: "Monat",
+            viewYear: "Jahr",
+            todayTitle: "Heutige Termine",
+            addEventBtn: "+ Termin",
+            spotifyTitle: "Spotify Live",
+            weatherTitle: "Wetter",
+            financeTitle: "Finanzen",
+            notesTitle: "Notizen",
+            notesPlaceholder: "Schreibe eine Notiz...",
+            stocksTitle: "Aktien",
+            settingsTitle: "Einstellungen & Design",
+            settingsNameLabel: "Dein Name (Begrüßung)",
+            settingsAccentLabel: "Akzentfarbe (Buttons & Highlights)",
+            settingsBgLabel: "Hintergrund-Design",
+            bgDark: "Tiefschwarz",
+            bgMidnight: "Mitternacht",
+            bgSpace: "Cosmic Space",
+            bgCyber: "Cyberpunk",
+            settingsCustomBgLabel: "Oder eigenes Hintergrundbild (Bild-URL)",
+            settingsCustomBgBtn: "Setzen",
+            settingsResetLabel: "Lokale Daten zurücksetzen:",
+            settingsResetBtn: "Reset",
+            settingsCloseBtn: "Schließen"
+        },
+        en: {
+            welcome: "Hello, ",
+            subtitle: "Here is your overview for today.",
+            langBtn: "🌐 DE",
+            navDashboard: "Dashboard",
+            navShortcuts: "Shortcuts",
+            navUni: "University & Schedule",
+            navToday: "Today's Events",
+            navSpotify: "Spotify Live",
+            navWeather: "Weather",
+            navFinance: "Finances",
+            navNotes: "Notes",
+            navStocks: "Stocks",
+            navSettings: "Settings",
+            shortcutsTitle: "Browser Shortcuts",
+            addShortcut: "+ Add",
+            uniTitle: "University & Schedule",
+            viewWeek: "Week",
+            viewMonth: "Month",
+            viewYear: "Year",
+            todayTitle: "Today's Events",
+            addEventBtn: "+ Event",
+            spotifyTitle: "Spotify Live",
+            weatherTitle: "Weather",
+            financeTitle: "Finances",
+            notesTitle: "Notes",
+            notesPlaceholder: "Write a note...",
+            stocksTitle: "Stocks",
+            settingsTitle: "Settings & Design",
+            settingsNameLabel: "Your Name (Greeting)",
+            settingsAccentLabel: "Accent Color (Buttons & Highlights)",
+            settingsBgLabel: "Background Design",
+            bgDark: "Pitch Black",
+            bgMidnight: "Midnight",
+            bgSpace: "Cosmic Space",
+            bgCyber: "Cyberpunk",
+            settingsCustomBgLabel: "Or custom background image (Image URL)",
+            settingsCustomBgBtn: "Apply",
+            settingsResetLabel: "Reset local data:",
+            settingsResetBtn: "Reset",
+            settingsCloseBtn: "Close"
+        }
+    };
+
+    let currentLang = localStorage.getItem('dashboard_lang') || 'de';
+
+    function updateTexts() {
+        const t = translations[currentLang];
+        const savedName = localStorage.getItem('dashboard_username') || 'Tobias';
+
+        // Header Begrüßung
+        const welcomeTitle = document.getElementById('welcomeTitle');
+        const welcomeSub = document.getElementById('welcomeSub');
+        if (welcomeTitle) welcomeTitle.textContent = `${t.welcome}${savedName}!`;
+        if (welcomeSub) welcomeSub.textContent = t.subtitle;
+
+        // Sprach-Button Text aktualisieren
+        const langBtn = document.getElementById('langToggleBtn');
+        if (langBtn) langBtn.textContent = t.langBtn;
+
+        // Spezielle Elemente direkt übersetzen (Buttons, Input-Placeholder etc.)
+        const spotifyLoginBtn = document.getElementById('spotifyLoginBtn');
+        if (spotifyLoginBtn) spotifyLoginBtn.textContent = currentLang === 'en' ? 'Connect' : 'Verbinden';
+
+        const weatherSearchInput = document.getElementById('weatherSearchInput');
+        if (weatherSearchInput) {
+            weatherSearchInput.placeholder = currentLang === 'en' ? 'Search city (e.g. Vienna)...' : 'Stadt suchen (z.B. Wien)...';
+        }
+
+        const notesTextarea = document.getElementById('dashboardNotes');
+        if (notesTextarea) {
+            notesTextarea.placeholder = t.notesPlaceholder;
+        }
+
+        // Alle Elemente mit data-i18n Attribut automatisch übersetzen
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (t[key]) {
+                if (el.tagName === 'INPUT' && el.hasAttribute('placeholder')) {
+                    el.placeholder = t[key];
+                } else {
+                    el.textContent = t[key];
+                }
+            }
+        });
+    }
+
+    // Sprach-Button Klick-Event (HIER HATTE ES GEFEHLT!)
+    const langToggleBtn = document.getElementById('langToggleBtn');
+    if (langToggleBtn) {
+        langToggleBtn.addEventListener('click', () => {
+            currentLang = currentLang === 'de' ? 'en' : 'de';
+            localStorage.setItem('dashboard_lang', currentLang);
+            updateTexts();
+        });
+    }
+
+    // Beim Start einmal ausführen
+    updateTexts();
     
 
     // --- INITIALISIERUNG BEIM LADEN DER SEITE ---

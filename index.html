@@ -28,31 +28,37 @@
                 </button>
             </div>
             
-            <!-- Sidebar Navigation in exakter Widget-Reihenfolge -->
+            <!-- Sidebar Navigation mit i18n-Attributen -->
             <nav class="nav-menu">
-                <a href="#" class="nav-item active sidebar-link" data-target="dashboard-top"><i class="fa-solid fa-house"></i> <span class="nav-text">Dashboard</span></a>
-                <a href="#" class="nav-item sidebar-link" data-target="shortcutsWidgetCard"><i class="fa-solid fa-bolt"></i> <span class="nav-text">Shortcuts</span></a>
-                <a href="#" class="nav-item sidebar-link" data-target="calendarWidgetCard"><i class="fa-solid fa-calendar-days"></i> <span class="nav-text">Uni & Termine</span></a>
-                <a href="#" class="nav-item sidebar-link" data-target="todayEventsWidgetCard"><i class="fa-solid fa-clock"></i> <span class="nav-text">Heutige Termine</span></a>
-                <a href="#" class="nav-item sidebar-link" data-target="spotifyWidgetCard"><i class="fa-solid fa-music"></i> <span class="nav-text">Spotify Live</span></a>
-                <a href="#" class="nav-item sidebar-link" data-target="weatherWidgetCard"><i class="fa-solid fa-cloud-sun"></i> <span class="nav-text">Wetter</span></a>
-                <a href="#" class="nav-item sidebar-link" data-target="financeWidgetCard"><i class="fa-solid fa-wallet"></i> <span class="nav-text">Finanzen</span></a>
-                <a href="#" class="nav-item sidebar-link" data-target="notesWidgetCard"><i class="fa-solid fa-note-sticky"></i> <span class="nav-text">Notizen</span></a>
-                <a href="#" class="nav-item sidebar-link" data-target="stocksWidgetCard"><i class="fa-solid fa-chart-line"></i> <span class="nav-text">Aktien</span></a>
+                <a href="#" class="nav-item active sidebar-link" data-target="dashboard-top"><i class="fa-solid fa-house"></i> <span class="nav-text" data-i18n="navDashboard">Dashboard</span></a>
+                <a href="#" class="nav-item sidebar-link" data-target="shortcutsWidgetCard"><i class="fa-solid fa-bolt"></i> <span class="nav-text" data-i18n="navShortcuts">Shortcuts</span></a>
+                <a href="#" class="nav-item sidebar-link" data-target="calendarWidgetCard"><i class="fa-solid fa-calendar-days"></i> <span class="nav-text" data-i18n="navUni">Uni & Termine</span></a>
+                <a href="#" class="nav-item sidebar-link" data-target="todayEventsWidgetCard"><i class="fa-solid fa-clock"></i> <span class="nav-text" data-i18n="navToday">Heutige Termine</span></a>
+                <a href="#" class="nav-item sidebar-link" data-target="spotifyWidgetCard"><i class="fa-solid fa-music"></i> <span class="nav-text" data-i18n="navSpotify">Spotify Live</span></a>
+                <a href="#" class="nav-item sidebar-link" data-target="weatherWidgetCard"><i class="fa-solid fa-cloud-sun"></i> <span class="nav-text" data-i18n="navWeather">Wetter</span></a>
+                <a href="#" class="nav-item sidebar-link" data-target="financeWidgetCard"><i class="fa-solid fa-wallet"></i> <span class="nav-text" data-i18n="navFinance">Finanzen</span></a>
+                <a href="#" class="nav-item sidebar-link" data-target="notesWidgetCard"><i class="fa-solid fa-note-sticky"></i> <span class="nav-text" data-i18n="navNotes">Notizen</span></a>
+                <a href="#" class="nav-item sidebar-link" data-target="stocksWidgetCard"><i class="fa-solid fa-chart-line"></i> <span class="nav-text" data-i18n="navStocks">Aktien</span></a>
             </nav>
 
             <div class="sidebar-footer">
-                <a href="#" class="nav-item" id="openSettingsBtn"><i class="fa-solid fa-gear"></i> <span class="nav-text">Einstellungen</span></a>
+                <a href="#" class="nav-item" id="openSettingsBtn"><i class="fa-solid fa-gear"></i> <span class="nav-text" data-i18n="navSettings">Einstellungen</span></a>
             </div>
         </aside>
 
         <!-- ================= HAUPTBEREICH ================= -->
         <main class="main-content">
             <!-- Header -->
-            <header class="top-header" id="dashboard-top">
+            <header class="top-header" id="dashboard-top" style="display: flex; justify-content: space-between; align-items: center;">
                 <div class="welcome-box">
-                    <h1>Hallo, Tobias!</h1>
-                    <p>Hier ist dein heutiger Überblick.</p>
+                    <h1 id="welcomeTitle">Hallo, Tobias!</h1>
+                    <p id="welcomeSub">Hier ist dein heutiger Überblick.</p>
+                </div>
+                <!-- Sprach-Umschalter oben rechts -->
+                <div class="header-actions">
+                    <button id="langToggleBtn" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 600; transition: all 0.2s;">
+                        🌐 EN
+                    </button>
                 </div>
             </header>
 
@@ -62,7 +68,7 @@
                 <!-- 1. Browser Shortcuts -->
                 <section class="widget shortcuts-widget widget-container" id="shortcutsWidgetCard">
                     <div class="widget-header">
-                        <h2><i class="fa-solid fa-bolt"></i> Browser Shortcuts</h2>
+                        <h2><i class="fa-solid fa-bolt"></i> <span data-i18n="shortcutsTitle">Browser Shortcuts</span></h2>
                         <div class="widget-header-actions">
                             <button class="header-icon-btn" id="toggleDeleteModeBtn" title="Löschmodus aktivieren">
                                 <i class="fa-solid fa-trash"></i>
@@ -78,11 +84,11 @@
                 <!-- 2. Kalender & Uni-Plan -->
                 <section class="widget calendar-widget widget-container" id="calendarWidgetCard">
                     <div class="widget-header">
-                        <h2><i class="fa-solid fa-calendar"></i> Uni & Termine</h2>
+                        <h2><i class="fa-solid fa-calendar"></i> <span data-i18n="uniTitle">Uni & Termine</span></h2>
                         <div class="calendar-view-switcher">
-                            <button class="view-btn active" data-view="week">Woche</button>
-                            <button class="view-btn" data-view="month">Monat</button>
-                            <button class="view-btn" data-view="year">Jahr</button>
+                            <button class="view-btn active" data-view="week" data-i18n="viewWeek">Woche</button>
+                            <button class="view-btn" data-view="month" data-i18n="viewMonth">Monat</button>
+                            <button class="view-btn" data-view="year" data-i18n="viewYear">Jahr</button>
                         </div>
                     </div>
 
@@ -114,8 +120,8 @@
                 <!-- 3. Heutige Termine -->
                 <section class="widget today-events-widget widget-container" id="todayEventsWidgetCard">
                     <div class="widget-header">
-                        <h2><i class="fa-solid fa-clock"></i> Heutige Termine</h2>
-                        <button class="add-event-btn" id="openEventModalBtn"><i class="fa-solid fa-plus"></i> Termin</button>
+                        <h2><i class="fa-solid fa-clock"></i> <span data-i18n="todayTitle">Heutige Termine</span></h2>
+                        <button class="add-event-btn" id="openEventModalBtn"><i class="fa-solid fa-plus"></i> <span data-i18n="addEventBtn">Termin</span></button>
                     </div>
                     <div class="events-list" id="todayEventsList"></div>
                 </section>
@@ -123,7 +129,7 @@
                 <!-- 4. Spotify Live-Player -->
                 <section class="widget media-widget widget-container" id="spotifyWidgetCard">
                     <div class="widget-header">
-                        <h2><i class="fa-solid fa-music"></i> Spotify Live</h2>
+                        <h2><i class="fa-solid fa-music"></i> <span data-i18n="spotifyTitle">Spotify Live</span></h2>
                         <button id="spotifyLoginBtn" class="add-event-btn" style="font-size: 0.75rem; padding: 4px 10px;">Verbinden</button>
                     </div>
                     <div id="spotifyPlayerContainer" class="spotify-player-modern" style="display: none;">
@@ -156,7 +162,7 @@
                 <!-- 5. Wetter Widget -->
                 <section class="widget weather-widget widget-container" id="weatherWidgetCard">
                     <div class="widget-header">
-                        <h2><i class="fa-solid fa-cloud-sun"></i> Wetter</h2>
+                        <h2><i class="fa-solid fa-cloud-sun"></i> <span data-i18n="weatherTitle">Wetter</span></h2>
                         <div class="weather-search-container">
                             <input type="text" id="weatherSearchInput" class="weather-search-input" placeholder="Stadt suchen (z.B. Meran)...">
                             <button id="weatherSearchBtn" class="weather-icon-btn" title="Suchen">
@@ -186,7 +192,7 @@
                 <!-- 6. Finanzen Manager -->
                 <section class="widget finance-widget widget-container" id="financeWidgetCard">
                     <div class="widget-header">
-                        <h2><i class="fa-solid fa-wallet"></i> Finanzen Manager</h2>
+                        <h2><i class="fa-solid fa-wallet"></i> <span data-i18n="financeTitle">Finanzen</span></h2>
                         <div class="widget-header-actions">
                             <button class="header-icon-btn" id="toggleFinancePrivacyBtn" title="Beträge ein-/ausblenden"><i class="fa-solid fa-eye-slash"></i></button>
                             <button class="add-event-btn" id="openFinanceModalBtn"><i class="fa-solid fa-plus"></i> Transaktion</button>
@@ -206,9 +212,9 @@
 
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <div class="calendar-view-switcher" id="financeViewSwitcher">
-                            <button class="view-btn" data-fview="week">Woche</button>
-                            <button class="view-btn active" data-fview="month">Monat</button>
-                            <button class="view-btn" data-fview="year">Jahr</button>
+                            <button class="view-btn" data-fview="week" data-i18n="viewWeek">Woche</button>
+                            <button class="view-btn active" data-fview="month" data-i18n="viewMonth">Monat</button>
+                            <button class="view-btn" data-fview="year" data-i18n="viewYear">Jahr</button>
                         </div>
                         <span style="font-size: 0.75rem; color: var(--text-muted);">Ziel: <strong id="finGoalVal" class="fin-amount" data-raw="500">•••• €</strong></span>
                     </div>
@@ -240,7 +246,7 @@
                 <!-- 7. Notizblock -->
                 <section class="widget notes-widget widget-container" id="notesWidgetCard">
                     <div class="widget-header">
-                        <h2><i class="fa-solid fa-note-sticky"></i> Notizblock</h2>
+                        <h2><i class="fa-solid fa-note-sticky"></i> <span data-i18n="notesTitle">Notizblock</span></h2>
                         <span id="notesSaveStatus" style="font-size: 0.7rem; color: var(--text-muted);">Gespeichert</span>
                     </div>
                     <textarea id="dashboardNotes" placeholder="Schreibe hier deine Notizen hin... (wird automatisch gespeichert)"></textarea>
@@ -249,7 +255,7 @@
                 <!-- 8. Aktienmärkte -->
                 <section class="widget stocks-widget widget-container" id="stocksWidgetCard">
                     <div class="widget-header">
-                        <h2><i class="fa-solid fa-chart-line"></i> Aktien & Märkte</h2>
+                        <h2><i class="fa-solid fa-chart-line"></i> <span data-i18n="stocksTitle">Aktien</span></h2>
                         <div class="stock-search-box" style="display: flex; gap: 6px;">
                             <input type="text" id="stockSearchInput" placeholder="Symbol (z.B. AAPL)...">
                             <button id="stockSearchBtn" class="add-event-btn" title="Suchen"><i class="fa-solid fa-search"></i></button>
@@ -263,7 +269,8 @@
                 </section>
 
             </div>
-                        <!-- Diskreter Footer für rechtliche Hinweise -->
+                
+            <!-- Diskreter Footer für rechtliche Hinweise -->
             <footer class="dashboard-footer" style="text-align: center; padding: 20px 0; margin-top: 40px; border-top: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.75rem; color: var(--text-muted, #9ca3af);">
                 <p>Organizer Dashboard &copy; 2026 — Ein privates, nicht-kommerzielles Projekt.</p>
                 <p style="margin-top: 4px;">Alle Daten werden ausschließlich lokal auf deinem Gerät gespeichert (LocalStorage).</p>
@@ -272,7 +279,7 @@
         </main>
     </div>
 
-    <!-- Modals (Modals bleiben unverändert) -->
+    <!-- Modals -->
     <div class="modal-overlay" id="shortcutModal">
         <div class="modal-card">
             <h3>Neuen Shortcut hinzufügen</h3>
@@ -409,24 +416,24 @@
         </div>
     </div>
 
-        <!-- Einstellungs-Modal -->
+    <!-- Einstellungs-Modal -->
     <div class="modal-overlay" id="settingsModal">
         <div class="modal-card" style="max-width: 480px; background: #0b132b; border: 1px solid rgba(6, 182, 212, 0.2); box-shadow: 0 15px 35px rgba(0,0,0,0.6);">
             <h3 style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; font-size: 1.2rem; color: #fff;">
-                <i class="fa-solid fa-gear" style="color: var(--accent-color);"></i> Einstellungen & Design
+                <i class="fa-solid fa-gear" style="color: var(--accent-color);"></i> <span data-i18n="settingsTitle">Einstellungen & Design</span>
             </h3>
             
             <div style="display: flex; flex-direction: column; gap: 20px; margin-bottom: 24px; font-size: 0.85rem;">
                 
                 <!-- Name anpassen -->
                 <div>
-                    <label style="display: block; color: var(--text-muted); margin-bottom: 6px; font-weight: 500;" for="userNameInput">Dein Name (Begrüßung)</label>
+                    <label style="display: block; color: var(--text-muted); margin-bottom: 6px; font-weight: 500;" for="userNameInput" data-i18n="settingsNameLabel">Dein Name (Begrüßung)</label>
                     <input type="text" id="userNameInput" placeholder="z.B. Tobias" style="width: 100%; padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.15); outline: none;">
                 </div>
 
                 <!-- Akzentfarbe / Theme Farbwahl -->
                 <div>
-                    <label style="display: block; color: var(--text-muted); margin-bottom: 8px; font-weight: 500;">Akzentfarbe (Buttons & Highlights)</label>
+                    <label style="display: block; color: var(--text-muted); margin-bottom: 8px; font-weight: 500;" data-i18n="settingsAccentLabel">Akzentfarbe (Buttons & Highlights)</label>
                     <div class="color-picker-palette" id="themeAccentPalette" style="display: flex; gap: 12px;">
                         <div class="color-dot" data-accent="#06b6d4" style="width: 32px; height: 32px; border-radius: 50%; background: #06b6d4; cursor: pointer; border: 2px solid transparent;" title="Cyan"></div>
                         <div class="color-dot" data-accent="#3b82f6" style="width: 32px; height: 32px; border-radius: 50%; background: #3b82f6; cursor: pointer; border: 2px solid transparent;" title="Blau"></div>
@@ -436,50 +443,50 @@
                     </div>
                 </div>
 
-                <!-- Schöne Hintergrund-Auswahl (Kacheln statt Dropdown) -->
+                <!-- Hintergrund-Auswahl (Kacheln) -->
                 <div>
-                    <label style="display: block; color: var(--text-muted); margin-bottom: 8px; font-weight: 500;">Hintergrund-Design</label>
+                    <label style="display: block; color: var(--text-muted); margin-bottom: 8px; font-weight: 500;" data-i18n="settingsBgLabel">Hintergrund-Design</label>
                     <div class="bg-options-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
                         <div class="bg-card" data-bg="dark" style="background: #050b14; border: 2px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 10px; cursor: pointer; text-align: center; color: #fff; transition: all 0.2s;">
                             <i class="fa-solid fa-moon" style="font-size: 1.2rem; margin-bottom: 4px; display: block; color: #06b6d4;"></i>
-                            <span style="font-size: 0.8rem;">Tiefschwarz</span>
+                            <span style="font-size: 0.8rem;" data-i18n="bgDark">Tiefschwarz</span>
                         </div>
                         <div class="bg-card" data-bg="midnight" style="background: #0f172a; border: 2px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 10px; cursor: pointer; text-align: center; color: #fff; transition: all 0.2s;">
                             <i class="fa-solid fa-cloud-moon" style="font-size: 1.2rem; margin-bottom: 4px; display: block; color: #3b82f6;"></i>
-                            <span style="font-size: 0.8rem;">Mitternacht</span>
+                            <span style="font-size: 0.8rem;" data-i18n="bgMidnight">Mitternacht</span>
                         </div>
                         <div class="bg-card" data-bg="space" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=200&auto=format&fit=crop'); background-size: cover; border: 2px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 10px; cursor: pointer; text-align: center; color: #fff; transition: all 0.2s;">
                             <i class="fa-solid fa-rocket" style="font-size: 1.2rem; margin-bottom: 4px; display: block; color: #ec4899;"></i>
-                            <span style="font-size: 0.8rem;">Cosmic Space</span>
+                            <span style="font-size: 0.8rem;" data-i18n="bgSpace">Cosmic Space</span>
                         </div>
                         <div class="bg-card" data-bg="cyber" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=200&auto=format&fit=crop'); background-size: cover; border: 2px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 10px; cursor: pointer; text-align: center; color: #fff; transition: all 0.2s;">
                             <i class="fa-solid fa-microchip" style="font-size: 1.2rem; margin-bottom: 4px; display: block; color: #22c55e;"></i>
-                            <span style="font-size: 0.8rem;">Cyberpunk</span>
+                            <span style="font-size: 0.8rem;" data-i18n="bgCyber">Cyberpunk</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Eigenes Hintergrundbild per URL -->
                 <div>
-                    <label style="display: block; color: var(--text-muted); margin-bottom: 6px; font-weight: 500;" for="customBgInput">Oder eigenes Hintergrundbild (Bild-URL)</label>
+                    <label style="display: block; color: var(--text-muted); margin-bottom: 6px; font-weight: 500;" for="customBgInput" data-i18n="settingsCustomBgLabel">Oder eigenes Hintergrundbild (Bild-URL)</label>
                     <div style="display: flex; gap: 8px;">
                         <input type="url" id="customBgInput" placeholder="https://beispiel.de/bild.jpg" style="flex: 1; padding: 8px 10px; border-radius: 8px; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.15); outline: none;">
-                        <button type="button" id="applyCustomBgBtn" class="add-event-btn" style="padding: 8px 14px; border-radius: 8px; background: var(--accent-color); color: #000; font-weight: 600; border: none; cursor: pointer;">Setzen</button>
+                        <button type="button" id="applyCustomBgBtn" class="add-event-btn" style="padding: 8px 14px; border-radius: 8px; background: var(--accent-color); color: #000; font-weight: 600; border: none; cursor: pointer;" data-i18n="settingsCustomBgBtn">Setzen</button>
                     </div>
                 </div>
 
                 <!-- Daten-Management -->
                 <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px; display: flex; justify-content: space-between; align-items: center;">
-                    <span style="color: var(--text-muted);">Lokale Daten zurücksetzen:</span>
+                    <span style="color: var(--text-muted);" data-i18n="settingsResetLabel">Lokale Daten zurücksetzen:</span>
                     <button id="resetDataBtn" class="add-event-btn" style="background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #ef4444; font-size: 0.75rem; padding: 6px 12px; border-radius: 8px; cursor: pointer;">
-                        <i class="fa-solid fa-triangle-exclamation"></i> Reset
+                        <i class="fa-solid fa-triangle-exclamation"></i> <span data-i18n="settingsResetBtn">Reset</span>
                     </button>
                 </div>
 
             </div>
 
             <div class="modal-buttons" style="display: flex;">
-                <button type="button" class="btn-primary" id="closeSettingsModalBtn" style="width: 100%; padding: 10px; border-radius: 10px; background: var(--accent-color); color: #000; font-weight: 600; border: none; cursor: pointer;">Schließen</button>
+                <button type="button" class="btn-primary" id="closeSettingsModalBtn" style="width: 100%; padding: 10px; border-radius: 10px; background: var(--accent-color); color: #000; font-weight: 600; border: none; cursor: pointer;" data-i18n="settingsCloseBtn">Schließen</button>
             </div>
         </div>
     </div>
