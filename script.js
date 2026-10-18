@@ -551,7 +551,10 @@ document.addEventListener('DOMContentLoaded', () => {
     renderShortcuts();
     renderCalendar();
 
-    // --- SPOTIFY LIVE API ÜBER PYTHON BRIDGE ---
+    // --- SPOTIFY LIVE API (DIREKT IM BROWSER MIT PKCE) ---
+    const spotifyClientId = '526176a9b56b44c795e25429109c402e'; // Trage hier deine Client ID aus dem Spotify Developer Dashboard ein
+    const spotifyRedirectUri = window.location.origin + window.location.pathname;
+
     const spotifyLoginBtn = document.getElementById('spotifyLoginBtn');
     const spotifyPlayerContainer = document.getElementById('spotifyPlayerContainer');
     const spotifyLoggedOutMsg = document.getElementById('spotifyLoggedOutMsg');
@@ -567,96 +570,179 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let isPlaying = false;
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const authCode = urlParams.get('code');
+    // Hilfsfunktionen für PKCE
+    const generateRandomString = (length) => {
+        const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        const values = crypto.getRandomValues(new Uint8Array(length));
+        return values.reduce((acc, x) => acc + possible[x % possible.length], '');
+    };
 
-    if (authCode) {
-        fetch(`http://127.0.0.1:5000/exchange-code?code=${authCode}`)
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
+    const sha256 = async (plain) => {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(plain);
+        return window.crypto.subtle.digest('SHA-256', data);
+    };
+
+    const base64encode = (input) => {
+        return btoa(String.fromCharCode(...new Uint8Array(input)))
+            .replace(/=/g, '')
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_');
+    };
+
+    // 1. Code-Austausch nach dem Redirect von Spotify
+    async function handleSpotifyPkceRedirect() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+
+        if (code) {
+            const codeVerifier = window.localStorage.getItem('code_verifier');
+            if (!codeVerifier) return;
+
+            try {
+                const response = await fetch('https://accounts.spotify.com/api/token', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({
+                        client_id: spotifyClientId,
+                        grant_type: 'authorization_code',
+                        code: code,
+                        redirect_uri: spotifyRedirectUri,
+                        code_verifier: codeVerifier,
+                    }),
+                });
+
+                const data = await response.json();
+                if (data.access_token) {
+                    localStorage.setItem('spotify_access_token', data.access_token);
+                    if (data.refresh_token) {
+                        localStorage.setItem('spotify_refresh_token', data.refresh_token);
+                    }
                     window.history.replaceState({}, document.title, window.location.pathname);
                     location.reload();
                 }
-            })
-            .catch(err => console.error("Code-Austausch fehlgeschlagen:", err));
+            } catch (err) {
+                console.error('Spotify Token Fehler:', err);
+            }
+        }
     }
 
+    handleSpotifyPkceRedirect();
+
+    // 2. Login-Button Event Listener
     if (spotifyLoginBtn) {
         spotifyLoginBtn.addEventListener('click', async () => {
-            try {
-                const res = await fetch('http://127.0.0.1:5000/login');
-                const data = await res.json();
-                if (data.auth_url) {
-                    window.location.href = data.auth_url;
-                }
-            } catch (err) {
-                console.error("Python Bridge nicht erreichbar:", err);
-                alert("Bitte starte zuerst das Python-Skript (spotify_bridge.py)!");
-            }
+            const codeVerifier = generateRandomString(64);
+            const hashed = await sha256(codeVerifier);
+            const codeChallenge = base64encode(hashed);
+
+            window.localStorage.setItem('code_verifier', codeVerifier);
+
+            const scope = 'user-read-playback-state user-modify-playback-state user-read-currently-playing';
+            const authUrl = new URL('https://accounts.spotify.com/authorize');
+
+            authUrl.search = new URLSearchParams({
+                response_type: 'code',
+                client_id: spotifyClientId,
+                scope: scope,
+                code_challenge_method: 'S256',
+                code_challenge: codeChallenge,
+                redirect_uri: spotifyRedirectUri,
+            }).toString();
+
+            window.location.href = authUrl.toString();
         });
     }
 
-    setInterval(async () => {
+    // 3. Aktuellen Song abrufen (Poll alle 3 Sekunden)
+    async function fetchCurrentlyPlaying() {
+        const token = localStorage.getItem('spotify_access_token');
+        if (!token) {
+            if (spotifyLoginBtn) spotifyLoginBtn.style.display = 'block';
+            if (spotifyPlayerContainer) spotifyPlayerContainer.style.display = 'none';
+            if (spotifyLoggedOutMsg) spotifyLoggedOutMsg.style.display = 'block';
+            return;
+        }
+
         try {
-            const res = await fetch('http://127.0.0.1:5000/currently-playing');
+            const res = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
             if (res.status === 401) {
-                if (spotifyLoginBtn) spotifyLoginBtn.style.display = 'block';
-                if (spotifyPlayerContainer) spotifyPlayerContainer.style.display = 'none';
+                // Token abgelaufen
+                localStorage.removeItem('spotify_access_token');
                 return;
             }
 
+            if (res.status === 204 || res.status > 300) {
+                return; // Nichts wird abgespielt
+            }
+
             const data = await res.json();
-            if (data && data.name) {
+            if (data && data.item) {
                 if (spotifyLoginBtn) spotifyLoginBtn.style.display = 'none';
                 if (spotifyLoggedOutMsg) spotifyLoggedOutMsg.style.display = 'none';
                 if (spotifyPlayerContainer) spotifyPlayerContainer.style.display = 'flex';
 
-                spotifyTitle.textContent = data.name;
-                spotifyArtist.textContent = data.artists.join(', ');
+                spotifyTitle.textContent = data.item.name;
+                spotifyArtist.textContent = data.item.artists.map(a => a.name).join(', ');
                 isPlaying = data.is_playing;
 
-                spotifyPlayPauseIcon.className = isPlaying ? "fa-solid fa-pause" : "fa-solid fa-play";
+                if (spotifyPlayPauseIcon) {
+                    spotifyPlayPauseIcon.className = isPlaying ? "fa-solid fa-pause" : "fa-solid fa-play";
+                }
 
-                if (data.album_image) {
-                    spotifyCoverImg.src = data.album_image;
+                if (data.item.album && data.item.album.images.length > 0) {
+                    spotifyCoverImg.src = data.item.album.images[0].url;
                     spotifyCoverImg.style.display = 'block';
-                    spotifyCoverIcon.style.display = 'none';
+                    if (spotifyCoverIcon) spotifyCoverIcon.style.display = 'none';
                 }
             }
         } catch (err) {
-            // Python Server läuft eventuell noch nicht
+            console.error("Spotify API Fehler:", err);
         }
-    }, 3000);
+    }
 
-    async function sendPythonCommand(action) {
+    setInterval(fetchCurrentlyPlaying, 3000);
+    fetchCurrentlyPlaying();
+
+    // 4. Player-Steuerung (Play, Pause, Skip)
+    async function sendSpotifyCommand(endpoint, method = 'PUT') {
+        const token = localStorage.getItem('spotify_access_token');
+        if (!token) return;
+
         try {
-            await fetch(`http://127.0.0.1:5000/control/${action}`, { method: 'POST' });
+            await fetch(`https://api.spotify.com/v1/me/player/${endpoint}`, {
+                method: method,
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            setTimeout(fetchCurrentlyPlaying, 4005);
         } catch (err) {
-            console.error("Control Error:", err);
+            console.error("Spotify Control Error:", err);
         }
     }
 
     if (spotifyPlayPause) {
         spotifyPlayPause.addEventListener('click', () => {
             if (isPlaying) {
-                sendPythonCommand('pause');
+                sendSpotifyCommand('pause', 'PUT');
                 isPlaying = false;
-                spotifyPlayPauseIcon.className = "fa-solid fa-play";
+                if (spotifyPlayPauseIcon) spotifyPlayPauseIcon.className = "fa-solid fa-play";
             } else {
-                sendPythonCommand('play');
+                sendSpotifyCommand('play', 'PUT');
                 isPlaying = true;
-                spotifyPlayPauseIcon.className = "fa-solid fa-pause";
+                if (spotifyPlayPauseIcon) spotifyPlayPauseIcon.className = "fa-solid fa-pause";
             }
         });
     }
 
     if (spotifyNext) {
-        spotifyNext.addEventListener('click', () => sendPythonCommand('next'));
+        spotifyNext.addEventListener('click', () => sendSpotifyCommand('next', 'POST'));
     }
 
     if (spotifyPrev) {
-        spotifyPrev.addEventListener('click', () => sendPythonCommand('previous'));
+        spotifyPrev.addEventListener('click', () => sendSpotifyCommand('previous', 'POST'));
     }
 
     // --- AKTIEN & MÄRKTE MIT FAVORITEN & EURO-UMSTELLUNG ---
