@@ -1,0 +1,1227 @@
+/* ==========================================================================
+   GLOBALER RESET & VARIABLEN (Glassmorphism Theme)
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+:root {
+    --bg-color: #050b14;
+    --sidebar-bg: rgba(10, 18, 30, 0.75);
+    --card-bg: rgba(13, 27, 42, 0.55);
+    --card-border: rgba(6, 182, 212, 0.15);
+    --card-border-glow: rgba(6, 182, 212, 0.45);
+    --text-primary: #f0fdf4;
+    --text-muted: #94a3b8;
+    --accent-color: #06b6d4;
+    --accent-dark: #0891b2;
+    --accent-gradient: linear-gradient(135deg, #06b6d4 0%, #0e7490 100%);
+    --hover-bg: rgba(6, 182, 212, 0.12);
+    --transition-smooth: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(6, 182, 212, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(14, 116, 144, 0.04) 0%, transparent 40%);
+}
+
+.app-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ==========================================================================
+   SIDEBAR & NAVIGATION
+   ========================================================================== */
+.sidebar {
+    width: 280px;
+    background-color: var(--sidebar-bg);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-right: 1px solid var(--card-border);
+    display: flex;
+    flex-direction: column;
+    padding: 28px 20px;
+    position: fixed;
+    height: 100vh;
+    z-index: 100;
+    transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    margin-bottom: 40px;
+    padding-left: 12px;
+}
+
+.nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-grow: 1;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-radius: 16px;
+    font-weight: 500;
+    border: 1px solid transparent;
+    transition: var(--transition-smooth);
+}
+
+.nav-item:hover, .nav-item.active {
+    background: var(--hover-bg);
+    color: var(--accent-color);
+    border-color: rgba(6, 182, 212, 0.3);
+    transform: scale(1.02) translateX(6px);
+    box-shadow: 0 4px 20px rgba(6, 182, 212, 0.1);
+}
+
+/* ==========================================================================
+   HAUPTBEREICH & HEADER
+   ========================================================================== */
+.main-content {
+    margin-left: 280px;
+    flex-grow: 1;
+    padding: 40px;
+    transition: margin-left 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 36px;
+}
+
+.welcome-box h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.welcome-box p {
+    color: var(--text-muted);
+    font-size: 1rem;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.profile-badge {
+    width: 44px;
+    height: 44px;
+    background: var(--accent-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+    transition: var(--transition-smooth);
+    cursor: pointer;
+}
+
+.profile-badge:hover {
+    transform: scale(1.08);
+}
+
+/* ==========================================================================
+   DASHBOARD GRID & WIDGETS
+   ========================================================================== */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+.widget {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 28px;
+    padding: 24px;
+    backdrop-filter: blur(30px);
+    box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition-smooth);
+}
+
+.widget:hover {
+    border-color: var(--card-border-glow);
+    box-shadow: 0 20px 50px rgba(6, 182, 212, 0.15);
+    transform: translateY(-3px);
+}
+
+.widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.widget-header h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-primary);
+}
+
+.widget-header h2 i {
+    color: var(--accent-color);
+}
+
+.widget-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Spalten-Zuweisung für Widgets */
+.shortcuts-widget { grid-column: span 6; }
+.calendar-widget { grid-column: span 6; grid-row: span 2; }
+.today-events-widget { grid-column: span 6; }
+.media-widget { grid-column: span 6; }
+.weather-widget { grid-column: span 6; }
+.finance-widget { grid-column: span 6; }
+.notes-widget { grid-column: span 6; }
+.stocks-widget { grid-column: span 12; }
+
+/* ==========================================================================
+   AKTIEN FAVORITEN LEISTE
+   ========================================================================== */
+.stock-favorites-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.stock-favorites-bar > div {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.stock-favorites-bar > div:hover {
+    background: rgba(6, 182, 212, 0.2);
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
+}
+
+/* ==========================================================================
+   BUTTONS & INTERAKTIVE ELEMENTE
+   ========================================================================== */
+.header-icon-btn, .cal-nav-btn {
+    background: rgba(6, 182, 212, 0.08);
+    border: 1px solid var(--card-border);
+    color: var(--text-muted);
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.header-icon-btn:hover, .cal-nav-btn:hover {
+    background: var(--hover-bg);
+    color: var(--accent-color);
+    border-color: var(--card-border-glow);
+    transform: scale(1.05);
+}
+
+.header-icon-btn.confirm-btn {
+    background: rgba(34, 197, 94, 0.2);
+    border-color: rgba(34, 197, 94, 0.4);
+    color: #22c55e;
+}
+
+.header-icon-btn.hidden {
+    display: none !important;
+}
+
+.add-event-btn {
+    background: rgba(6, 182, 212, 0.08);
+    border: 1px solid var(--card-border);
+    color: var(--accent-color);
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: var(--transition-smooth);
+}
+
+.add-event-btn:hover {
+    background: rgba(6, 182, 212, 0.2);
+    border-color: var(--card-border-glow);
+    color: var(--text-primary);
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Shortcuts Grid */
+.shortcuts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.shortcut-card {
+    background: rgba(6, 182, 212, 0.04);
+    border: 1px solid rgba(6, 182, 212, 0.1);
+    border-radius: 14px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-decoration: none;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    transition: var(--transition-smooth);
+}
+
+.shortcut-card:hover {
+    background: rgba(6, 182, 212, 0.12);
+    border-color: var(--card-border-glow);
+    transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   KALENDER & ANSICHTEN
+   ========================================================================== */
+.calendar-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.calendar-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    padding: 0 2px;
+}
+
+.calendar-view-switcher {
+    display: flex;
+    background: rgba(5, 11, 20, 0.5);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 2px;
+    gap: 4px;
+}
+
+.view-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.view-btn.active {
+    background: var(--accent-gradient);
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(6, 182, 212, 0.3);
+}
+
+.calendar-views-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.cal-view {
+    display: none !important;
+    width: 100%;
+}
+
+.cal-view.active {
+    display: block !important;
+}
+
+.week-grid-header {
+    display: grid;
+    grid-template-columns: 50px repeat(7, 1fr);
+    text-align: center;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    gap: 2px;
+}
+
+.week-hours-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    max-height: 380px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.hour-row {
+    display: grid;
+    grid-template-columns: 50px repeat(7, 1fr);
+    gap: 2px;
+    align-items: center;
+}
+
+.hour-label {
+    font-size: 0.6rem;
+    color: var(--text-muted);
+    text-align: right;
+    padding-right: 4px;
+}
+
+.hour-cell {
+    background: rgba(6, 182, 212, 0.03);
+    border: 1px solid rgba(6, 182, 212, 0.08);
+    border-radius: 5px;
+    height: 28px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.55rem;
+    color: var(--text-primary);
+    padding: 2px;
+    text-align: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: var(--transition-smooth);
+}
+
+.hour-cell:hover {
+    background: rgba(6, 182, 212, 0.2);
+    border-color: var(--accent-color);
+}
+
+.weekdays-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.calendar-day, .year-month-card {
+    background: rgba(6, 182, 212, 0.03);
+    border: 1px solid rgba(6, 182, 212, 0.08);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.calendar-day { aspect-ratio: 1; }
+.year-month-card { padding: 12px; text-align: center; }
+
+.calendar-day:hover, .year-month-card:hover {
+    background: rgba(6, 182, 212, 0.15);
+    border-color: var(--accent-color);
+    transform: scale(1.03);
+}
+
+.events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 140px;
+    overflow-y: auto;
+}
+
+.event-item {
+    background: rgba(6, 182, 212, 0.05);
+    border: 1px solid rgba(6, 182, 212, 0.12);
+    border-radius: 10px;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    transition: var(--transition-smooth);
+    cursor: pointer;
+}
+
+.event-item:hover {
+    background: rgba(6, 182, 212, 0.15);
+    border-color: var(--card-border-glow);
+    transform: translateX(4px);
+}
+
+/* Notizblock */
+#dashboardNotes {
+    width: 100%;
+    height: 160px;
+    background: rgba(5, 11, 20, 0.4);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 12px;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    outline: none;
+    resize: none;
+    font-family: 'Inter', sans-serif;
+    transition: var(--transition-smooth);
+}
+
+#dashboardNotes:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+}
+
+/* Aktien Input */
+.stocks-widget input[type="text"] {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 8px;
+    padding: 6px 12px;
+    color: #fff;
+    font-size: 0.8rem;
+    outline: none;
+    width: 140px;
+    transition: var(--transition-smooth);
+}
+.stocks-widget input[type="text"]:focus {
+    border-color: var(--accent-color);
+}
+
+/* ==========================================================================
+   MODAL STYLING & MODERNE FARB-PALETTE
+   ========================================================================== */
+.modal-card {
+    background: rgba(13, 27, 42, 0.85);
+    border: 1px solid var(--card-border-glow);
+    border-radius: 24px;
+    padding: 30px;
+    width: 420px;
+    max-width: 90vw;
+    backdrop-filter: blur(30px);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    color: var(--text-primary);
+}
+
+.modal-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.input-group label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.input-group input[type="text"],
+.input-group input[type="date"],
+.input-group input[type="url"],
+.input-group input[type="number"],
+.styled-select {
+    background: rgba(5, 11, 20, 0.6);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 10px 14px;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    outline: none;
+    width: 100%;
+    transition: var(--transition-smooth);
+}
+
+.input-group input:focus,
+.styled-select:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+}
+
+/* Neue moderne Farb-Palette (Runde Farbpunkte) */
+.color-picker-palette {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 6px 0;
+}
+
+.color-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: var(--transition-smooth);
+}
+
+.color-dot:hover {
+    transform: scale(1.15);
+}
+
+.color-dot.active {
+    border-color: #fff;
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+    transform: scale(1.1);
+}
+
+.modal-buttons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.btn-primary {
+    background: var(--accent-gradient);
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+    transition: var(--transition-smooth);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--card-border);
+    color: var(--text-muted);
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+
+/* ==========================================================================
+   SIDEBAR TOGGLE & MODAL OVERLAY FIX
+   ========================================================================== */
+.sidebar-toggle-btn {
+    background: rgba(6, 182, 212, 0.08);
+    border: 1px solid var(--card-border);
+    color: var(--accent-color);
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.sidebar-toggle-btn:hover {
+    background: rgba(6, 182, 212, 0.2);
+    border-color: var(--card-border-glow);
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+}
+
+.sidebar.collapsed {
+    width: 90px;
+    padding: 28px 12px;
+}
+
+.sidebar.collapsed .logo-text,
+.sidebar.collapsed .nav-text {
+    display: none;
+}
+
+.sidebar.collapsed .sidebar-header {
+    padding-left: 0;
+    justify-content: center;
+}
+
+.sidebar.collapsed .logo {
+    display: none;
+}
+
+.sidebar.collapsed .nav-item {
+    justify-content: center;
+    padding: 14px;
+}
+
+.sidebar.collapsed ~ .main-content {
+    margin-left: 90px;
+}
+
+/* Zeit-Auswahl kompakter machen */
+#timeSlotGroup .styled-select {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+    height: 38px;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(5, 11, 20, 0.8);
+    backdrop-filter: blur(10px);
+    display: none !important;
+    align-items: flex-start; /* Modal weiter oben ansetzen */
+    justify-content: center;
+    padding-top: 60px; /* Abstand von oben */
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+.modal-overlay.active {
+    display: flex !important;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* --- MODERNES SPOTIFY WIDGET --- */
+.spotify-player-modern {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    padding: 10px 5px;
+}
+
+/* Cover Styling */
+.spotify-cover-wrapper {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+#spotifyCoverImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none; /* Wird vom JavaScript aktiviert */
+}
+
+.fallback-icon {
+    font-size: 3rem;
+    color: var(--text-muted, #9ca3af);
+}
+
+/* Info Bereich (Text & Herz) */
+.spotify-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 5px;
+}
+
+.spotify-text {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.track-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #ffffff;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.track-artist {
+    font-size: 0.85rem;
+    color: var(--text-muted, #9ca3af);
+    margin-top: 4px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.like-icon {
+    color: var(--text-muted, #9ca3af);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.like-icon:hover {
+    color: #1ed760; /* Spotify Grün */
+}
+
+/* Steuerungselemente */
+.spotify-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    width: 100%;
+    margin-top: 5px;
+}
+
+.control-primary {
+    font-size: 1.4rem;
+    color: #ffffff;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.control-primary:hover {
+    color: #1ed760;
+    transform: scale(1.1);
+}
+
+.control-secondary {
+    font-size: 1.1rem;
+    color: var(--text-muted, #9ca3af);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.control-secondary:hover {
+    color: #ffffff;
+}
+
+/* Runder Play/Pause Button */
+.play-pause-btn {
+    width: 50px;
+    height: 50px;
+    background-color: #1ed760;
+    color: #000000;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    box-shadow: 0 4px 12px rgba(30, 215, 96, 0.3);
+}
+
+.play-pause-btn:hover {
+    transform: scale(1.08);
+    background-color: #1fdf64;
+}
+
+/* --- MODERNES SPOTIFY WIDGET --- */
+.spotify-player-modern {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 260px; /* Verhindert, dass es riesig wird */
+    margin: 0 auto;   /* Zentriert das Widget im Grid */
+    padding: 10px 0;
+}
+
+.spotify-cover-wrapper {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+#spotifyCoverImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+}
+
+.fallback-icon {
+    font-size: 3rem;
+    color: var(--text-muted, #9ca3af);
+}
+
+.spotify-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 5px;
+}
+
+.spotify-text {
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.track-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #ffffff;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.track-artist {
+    font-size: 0.85rem;
+    color: var(--text-muted, #9ca3af);
+    margin-top: 4px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.like-icon {
+    color: var(--text-muted, #9ca3af);
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.like-icon:hover {
+    color: #1ed760;
+}
+
+.spotify-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    width: 100%;
+    margin-top: 5px;
+}
+
+.control-primary {
+    font-size: 1.4rem;
+    color: #ffffff;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.control-primary:hover {
+    color: #1ed760;
+    transform: scale(1.1);
+}
+
+.control-secondary {
+    font-size: 1.1rem;
+    color: var(--text-muted, #9ca3af);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.control-secondary:hover {
+    color: #ffffff;
+}
+
+.play-pause-btn {
+    width: 50px;
+    height: 50px;
+    background-color: #1ed760;
+    color: #000000;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    box-shadow: 0 4px 12px rgba(30, 215, 96, 0.3);
+}
+
+.play-pause-btn:hover {
+    transform: scale(1.08);
+    background-color: #1fdf64;
+}
+
+/* Neuer Status für gedrückte Buttons */
+.active-green {
+    color: #1ed760 !important;
+}
+
+/* --- WETTER SUCHE UI --- */
+.weather-search-container {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05); /* Dunkler, transparenter Hintergrund */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px; /* Schöne abgerundete Ecken */
+    padding: 4px 6px 4px 14px;
+    width: 100%;
+    max-width: 320px;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Leucht-Effekt, wenn man in das Feld klickt */
+.weather-search-container:focus-within {
+    border-color: #06b6d4; /* Passend zu deinen restlichen Akzentfarben */
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.weather-search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 0.9rem;
+    padding: 6px 0;
+    outline: none;
+    width: 100%;
+}
+
+.weather-search-input::placeholder {
+    color: var(--text-muted, rgba(255, 255, 255, 0.4));
+}
+
+/* Buttons in der Suchleiste */
+.weather-icon-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted, #9ca3af);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+}
+
+.weather-icon-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.weather-icon-btn:active {
+    transform: scale(0.9);
+}
+
+/* Kleine visuelle Trennlinie zwischen Suche und GPS-Button */
+.weather-search-divider {
+    width: 1px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.15);
+    margin: 0 4px;
+}
+
+/* Standort-Button bekommt beim Hovern die blaue Farbe */
+.locate-btn:hover {
+    color: #06b6d4;
+}
+
+/* --- FINANZEN MANAGER HOVER ANIMATIONEN --- */
+
+/* 1. Einnahmen & Ausgaben Container (Klickbar für die Listen) */
+#openIncomeList, 
+#openExpenseList {
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    border-radius: 8px; /* Falls sie noch nicht abgerundet waren */
+    padding: 5px; /* Etwas Platz für den Hover-Hintergrund */
+}
+
+#openIncomeList:hover, 
+#openExpenseList:hover {
+    transform: translateY(-3px); /* Hebt die Karte leicht an */
+    background: rgba(255, 255, 255, 0.08); /* Leuchtet leicht auf */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 2. Woche / Monat / Jahr Umschalter */
+#financeViewSwitcher .view-btn {
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+#financeViewSwitcher .view-btn:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.15); /* Hellerer Hintergrund beim Drüberfahren */
+    transform: scale(1.05); /* Wird eine Spur größer */
+}
+
+/* Aktiver Button im Switcher soll etwas leuchten */
+#financeViewSwitcher .view-btn.active {
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.3); /* Leichter Glow in Akzentfarbe */
+}
+
+/* 3. Icon Buttons: Privacy (Auge) & Hinzufügen (Plus) */
+#toggleFinancePrivacyBtn, 
+#openFinanceModalBtn {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#toggleFinancePrivacyBtn:hover, 
+#openFinanceModalBtn:hover {
+    color: #06b6d4; /* Deine Akzentfarbe */
+    transform: scale(1.15) rotate(5deg); /* Leichter Zoom mit minimaler Drehung für Dynamik */
+}
+
+/* 4. Mülleimer-Icon in der Transaktionsliste */
+.delete-tx {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.delete-tx:hover {
+    color: #ef4444 !important; /* Leuchtend Rot beim Hovern */
+    transform: scale(1.2);
+}
+
+/* Aktiver Link in der Sidebar (z.B. hellblau hinterlegt, wie in deinem Bild) */
+.sidebar-link.active {
+    background-color: rgba(6, 182, 212, 0.15); /* Akzentfarbe mit Transparenz */
+    color: #06b6d4;
+    border-radius: 8px;
+}
+
+/* Der Fokus-Effekt für das angewählte Widget */
+.widget-focus {
+    transform: scale(1.02) !important;
+    box-shadow: 0 0 25px rgba(6, 182, 212, 0.4) !important;
+    border-color: #06b6d4 !important;
+    z-index: 10; /* Bringt es physisch in den Vordergrund */
+    transition: all 0.5s ease-out;
+}
+
+/* Sanfter Übergang für alle Widget-Container */
+.widget-container {
+    transition: all 0.5s ease-out;
+}
+
+/* Dynamische Akzent- und Hover-Stile */
+.btn-primary, .add-event-btn:hover, .play-pause-btn {
+    background-color: var(--accent-color) !important;
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover, .play-pause-btn:hover {
+    filter: brightness(1.15);
+    box-shadow: 0 0 15px var(--accent-color);
+}
+
+.sidebar-link.active {
+    background-color: color-mix(in srgb, var(--accent-color) 20%, transparent) !important;
+    color: var(--accent-color) !important;
+}
+
+/* Auswahlrahmen für Farb-Dots */
+.color-dot.active-dot {
+    border-color: #ffffff !important;
+    transform: scale(1.15);
+    box-shadow: 0 0 10px rgba(255,255,255,0.5);
+}
+
+.bg-card.active-bg {
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 12px color-mix(in srgb, var(--accent-color) 50%, transparent);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+.bg-card:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Aktiver Kalender-Ansichts-Button (z.B. Woche/Monat/Jahr) in Akzentfarbe */
+.calendar-view-switcher .view-btn.active,
+#financeViewSwitcher .view-btn.active {
+    background-color: var(--accent-color) !important;
+    color: #000 !important;
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 12px color-mix(in srgb, var(--accent-color) 60%, transparent) !important;
+}
+
+/* Erzwinge die Akzentfarbe für den aktiven Ansichts-Button (Woche/Monat/Jahr) ohne blaue Reste */
+.calendar-view-switcher .view-btn.active,
+#financeViewSwitcher .view-btn.active {
+    background-color: var(--accent-color) !important;
+    background-image: none !important;
+    color: #000 !important;
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 15px var(--accent-color) !important;
+}

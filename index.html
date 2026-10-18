@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizer Dashboard</title>
+    <!-- Haupt-Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Spotify SDK -->
+    <script src="https://sdk.scdn.co/spotify-player.js"></script>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- ================= SIDEBAR / NAVIGATION ================= -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; padding-left: 12px; padding-right: 4px;">
+                <div class="logo" style="margin-bottom: 0; padding-left: 0;">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <span class="logo-text">Organizer</span>
+                </div>
+                <button class="sidebar-toggle-btn" id="sidebarToggleBtn" title="Sidebar ein-/ausklappen">
+                    <i class="fa-solid fa-chevron-left" id="sidebarToggleIcon"></i>
+                </button>
+            </div>
+            
+            <!-- Sidebar Navigation in exakter Widget-Reihenfolge -->
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active sidebar-link" data-target="dashboard-top"><i class="fa-solid fa-house"></i> <span class="nav-text">Dashboard</span></a>
+                <a href="#" class="nav-item sidebar-link" data-target="shortcutsWidgetCard"><i class="fa-solid fa-bolt"></i> <span class="nav-text">Shortcuts</span></a>
+                <a href="#" class="nav-item sidebar-link" data-target="calendarWidgetCard"><i class="fa-solid fa-calendar-days"></i> <span class="nav-text">Uni & Termine</span></a>
+                <a href="#" class="nav-item sidebar-link" data-target="todayEventsWidgetCard"><i class="fa-solid fa-clock"></i> <span class="nav-text">Heutige Termine</span></a>
+                <a href="#" class="nav-item sidebar-link" data-target="spotifyWidgetCard"><i class="fa-solid fa-music"></i> <span class="nav-text">Spotify Live</span></a>
+                <a href="#" class="nav-item sidebar-link" data-target="weatherWidgetCard"><i class="fa-solid fa-cloud-sun"></i> <span class="nav-text">Wetter</span></a>
+                <a href="#" class="nav-item sidebar-link" data-target="financeWidgetCard"><i class="fa-solid fa-wallet"></i> <span class="nav-text">Finanzen</span></a>
+                <a href="#" class="nav-item sidebar-link" data-target="notesWidgetCard"><i class="fa-solid fa-note-sticky"></i> <span class="nav-text">Notizen</span></a>
+                <a href="#" class="nav-item sidebar-link" data-target="stocksWidgetCard"><i class="fa-solid fa-chart-line"></i> <span class="nav-text">Aktien</span></a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="#" class="nav-item" id="openSettingsBtn"><i class="fa-solid fa-gear"></i> <span class="nav-text">Einstellungen</span></a>
+            </div>
+        </aside>
+
+        <!-- ================= HAUPTBEREICH ================= -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header" id="dashboard-top">
+                <div class="welcome-box">
+                    <h1>Hallo, Tobias!</h1>
+                    <p>Hier ist dein heutiger Überblick.</p>
+                </div>
+            </header>
+
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+                
+                <!-- 1. Browser Shortcuts -->
+                <section class="widget shortcuts-widget widget-container" id="shortcutsWidgetCard">
+                    <div class="widget-header">
+                        <h2><i class="fa-solid fa-bolt"></i> Browser Shortcuts</h2>
+                        <div class="widget-header-actions">
+                            <button class="header-icon-btn" id="toggleDeleteModeBtn" title="Löschmodus aktivieren">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                            <button class="header-icon-btn confirm-btn hidden" id="confirmDeleteBtn" title="Löschen bestätigen">
+                                <i class="fa-solid fa-check"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="shortcuts-grid" id="shortcutsGrid"></div>
+                </section>
+
+                <!-- 2. Kalender & Uni-Plan -->
+                <section class="widget calendar-widget widget-container" id="calendarWidgetCard">
+                    <div class="widget-header">
+                        <h2><i class="fa-solid fa-calendar"></i> Uni & Termine</h2>
+                        <div class="calendar-view-switcher">
+                            <button class="view-btn active" data-view="week">Woche</button>
+                            <button class="view-btn" data-view="month">Monat</button>
+                            <button class="view-btn" data-view="year">Jahr</button>
+                        </div>
+                    </div>
+
+                    <div class="calendar-container">
+                        <div class="calendar-nav">
+                            <button id="prevPeriod" class="cal-nav-btn"><i class="fa-solid fa-chevron-left"></i></button>
+                            <span id="periodDisplay">Woche</span>
+                            <button id="nextPeriod" class="cal-nav-btn"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+
+                        <div class="calendar-views-wrapper">
+                            <div class="cal-view active" id="weekView">
+                                <div class="week-grid-header" id="weekHeader"></div>
+                                <div class="week-hours-grid" id="weekHoursGrid"></div>
+                            </div>
+                            <div class="cal-view" id="monthView">
+                                <div class="weekdays-grid">
+                                    <span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span>
+                                </div>
+                                <div class="days-grid" id="monthDaysGrid"></div>
+                            </div>
+                            <div class="cal-view" id="yearView">
+                                <div class="year-grid" id="yearMonthsGrid"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. Heutige Termine -->
+                <section class="widget today-events-widget widget-container" id="todayEventsWidgetCard">
+                    <div class="widget-header">
+                        <h2><i class="fa-solid fa-clock"></i> Heutige Termine</h2>
+                        <button class="add-event-btn" id="openEventModalBtn"><i class="fa-solid fa-plus"></i> Termin</button>
+                    </div>
+                    <div class="events-list" id="todayEventsList"></div>
+                </section>
+
+                <!-- 4. Spotify Live-Player -->
+                <section class="widget media-widget widget-container" id="spotifyWidgetCard">
+                    <div class="widget-header">
+                        <h2><i class="fa-solid fa-music"></i> Spotify Live</h2>
+                        <button id="spotifyLoginBtn" class="add-event-btn" style="font-size: 0.75rem; padding: 4px 10px;">Verbinden</button>
+                    </div>
+                    <div id="spotifyPlayerContainer" class="spotify-player-modern" style="display: none;">
+                        <div class="spotify-cover-wrapper">
+                            <img id="spotifyCoverImg" src="" alt="Album Cover">
+                            <i id="spotifyCoverIcon" class="fa-solid fa-music fallback-icon"></i>
+                        </div>
+                        <div class="spotify-info">
+                            <div class="spotify-text">
+                                <div id="spotifyTitle" class="track-title">Titel</div>
+                                <div id="spotifyArtist" class="track-artist">Künstler</div>
+                            </div>
+                            <i id="spotifyLike" class="fa-solid fa-heart like-icon"></i>
+                        </div>
+                        <div class="spotify-controls">
+                            <i id="spotifyShuffle" class="fa-solid fa-shuffle control-secondary"></i>
+                            <i id="spotifyPrev" class="fa-solid fa-backward-step control-primary"></i>
+                            <div id="spotifyPlayPause" class="play-pause-btn">
+                                <i id="spotifyPlayPauseIcon" class="fa-solid fa-play"></i>
+                            </div>
+                            <i id="spotifyNext" class="fa-solid fa-forward-step control-primary"></i>
+                            <i id="spotifyRepeat" class="fa-solid fa-repeat control-secondary"></i>
+                        </div>
+                    </div>
+                    <div id="spotifyLoggedOutMsg" style="text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 15px;">
+                        Klicke oben rechts auf <b>"Verbinden"</b>, um dein Spotify-Konto zu verknüpfen.
+                    </div>
+                </section>
+
+                <!-- 5. Wetter Widget -->
+                <section class="widget weather-widget widget-container" id="weatherWidgetCard">
+                    <div class="widget-header">
+                        <h2><i class="fa-solid fa-cloud-sun"></i> Wetter</h2>
+                        <div class="weather-search-container">
+                            <input type="text" id="weatherSearchInput" class="weather-search-input" placeholder="Stadt suchen (z.B. Meran)...">
+                            <button id="weatherSearchBtn" class="weather-icon-btn" title="Suchen">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </button>
+                            <div class="weather-search-divider"></div>
+                            <button id="weatherLocateBtn" class="weather-icon-btn locate-btn" title="Mein Standort">
+                                <i class="fa-solid fa-location-crosshairs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="weather-content" id="weatherContent" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 0;">
+                        <div style="display: flex; align-items: center; gap: 16px;">
+                            <i id="weatherIcon" class="fa-solid fa-sun" style="font-size: 2.5rem; color: var(--accent-color);"></i>
+                            <div>
+                                <h3 id="weatherTemp" style="font-size: 1.8rem; font-weight: 700; margin-bottom: 2px;">--°C</h3>
+                                <p id="weatherCondition" style="font-size: 0.85rem; color: var(--text-muted);">Lade Wetterdaten...</p>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <span id="weatherCity" style="font-size: 0.95rem; font-weight: 600; color: var(--text-primary);">Wien</span>
+                            <p id="weatherDetails" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">Wind: -- km/h</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. Finanzen Manager -->
+                <section class="widget finance-widget widget-container" id="financeWidgetCard">
+                    <div class="widget-header">
+                        <h2><i class="fa-solid fa-wallet"></i> Finanzen Manager</h2>
+                        <div class="widget-header-actions">
+                            <button class="header-icon-btn" id="toggleFinancePrivacyBtn" title="Beträge ein-/ausblenden"><i class="fa-solid fa-eye-slash"></i></button>
+                            <button class="add-event-btn" id="openFinanceModalBtn"><i class="fa-solid fa-plus"></i> Transaktion</button>
+                        </div>
+                    </div>
+                    
+                    <div class="finance-overview" style="display: flex; gap: 15px; margin-bottom: 15px;">
+                        <div id="openIncomeList" style="flex: 1; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); cursor: pointer; transition: all 0.2s;" title="Klicken, um Einnahmen anzuzeigen">
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">Einnahmen (<span id="finPeriodLabel">Monat</span>) <i class="fa-solid fa-chevron-right" style="font-size: 0.6rem;"></i></span>
+                            <h3 id="finIncomeVal" class="fin-amount" style="font-size: 1.1rem; color: #22c55e; margin-top: 4px;" data-raw="0">•••• €</h3>
+                        </div>
+                        <div id="openExpenseList" style="flex: 1; background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); cursor: pointer; transition: all 0.2s;" title="Klicken, um Ausgaben anzuzeigen">
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">Ausgaben (<span id="finPeriodLabel2">Monat</span>) <i class="fa-solid fa-chevron-right" style="font-size: 0.6rem;"></i></span>
+                            <h3 id="finExpenseVal" class="fin-amount" style="font-size: 1.1rem; color: #ef4444; margin-top: 4px;" data-raw="0">•••• €</h3>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <div class="calendar-view-switcher" id="financeViewSwitcher">
+                            <button class="view-btn" data-fview="week">Woche</button>
+                            <button class="view-btn active" data-fview="month">Monat</button>
+                            <button class="view-btn" data-fview="year">Jahr</button>
+                        </div>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">Ziel: <strong id="finGoalVal" class="fin-amount" data-raw="500">•••• €</strong></span>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 20px; background: rgba(5,11,20,0.4); padding: 15px; border-radius: 16px; border: 1px solid rgba(6,182,212,0.1);">
+                        <div style="position: relative; width: 80px; height: 80px; flex-shrink: 0;">
+                            <svg width="80" height="80" viewBox="0 0 36 36" style="transform: rotate(-90deg);">
+                                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="3.5" />
+                                <path id="finRingProgress" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="var(--accent-color)" stroke-width="3.5" stroke-dasharray="0, 100" />
+                            </svg>
+                            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.7rem;">
+                                <span id="finRatioPercent" style="font-weight: 700;">0%</span>
+                                <span style="font-size: 0.55rem; color: var(--text-muted);">Budget</span>
+                            </div>
+                        </div>
+                        <div style="flex-grow: 1; font-size: 0.8rem; display: flex; flex-direction: column; gap: 6px;">
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: var(--text-muted);">Saldo / Bilanz:</span>
+                                <strong id="finBalanceVal" class="fin-amount" data-raw="0" style="color: var(--text-primary);">•••• €</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span style="color: var(--text-muted);">Status:</span>
+                                <span id="finStatusText" style="font-weight: 500; color: var(--accent-color);">Im Rahmen</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 7. Notizblock -->
+                <section class="widget notes-widget widget-container" id="notesWidgetCard">
+                    <div class="widget-header">
+                        <h2><i class="fa-solid fa-note-sticky"></i> Notizblock</h2>
+                        <span id="notesSaveStatus" style="font-size: 0.7rem; color: var(--text-muted);">Gespeichert</span>
+                    </div>
+                    <textarea id="dashboardNotes" placeholder="Schreibe hier deine Notizen hin... (wird automatisch gespeichert)"></textarea>
+                </section>
+
+                <!-- 8. Aktienmärkte -->
+                <section class="widget stocks-widget widget-container" id="stocksWidgetCard">
+                    <div class="widget-header">
+                        <h2><i class="fa-solid fa-chart-line"></i> Aktien & Märkte</h2>
+                        <div class="stock-search-box" style="display: flex; gap: 6px;">
+                            <input type="text" id="stockSearchInput" placeholder="Symbol (z.B. AAPL)...">
+                            <button id="stockSearchBtn" class="add-event-btn" title="Suchen"><i class="fa-solid fa-search"></i></button>
+                            <button id="stockAddFavBtn" class="add-event-btn" style="background: rgba(6, 182, 212, 0.2); border: 1px solid var(--accent);" title="Zu Favoriten hinzufügen"><i class="fa-solid fa-star"></i></button>
+                        </div>
+                    </div>
+                    <div class="stock-favorites-bar" id="stockFavoritesBar"></div>
+                    <div class="tradingview-widget-container">
+                      <div id="tradingview_widget_wrapper" style="height: 310px; width: 100%;"></div>
+                    </div>
+                </section>
+
+            </div>
+                        <!-- Diskreter Footer für rechtliche Hinweise -->
+            <footer class="dashboard-footer" style="text-align: center; padding: 20px 0; margin-top: 40px; border-top: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.75rem; color: var(--text-muted, #9ca3af);">
+                <p>Organizer Dashboard &copy; 2026 — Ein privates, nicht-kommerzielles Projekt.</p>
+                <p style="margin-top: 4px;">Alle Daten werden ausschließlich lokal auf deinem Gerät gespeichert (LocalStorage).</p>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- Modals (Modals bleiben unverändert) -->
+    <div class="modal-overlay" id="shortcutModal">
+        <div class="modal-card">
+            <h3>Neuen Shortcut hinzufügen</h3>
+            <form id="shortcutForm">
+                <div class="input-group">
+                    <label for="shortcutName">Name</label>
+                    <input type="text" id="shortcutName" placeholder="z.B. TUWEL" required>
+                </div>
+                <div class="input-group">
+                    <label for="shortcutUrl">URL</label>
+                    <input type="url" id="shortcutUrl" placeholder="https://..." required>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-secondary" id="closeModal">Abbrechen</button>
+                    <button type="submit" class="btn-primary">Hinzufügen</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="eventModal">
+        <div class="modal-card">
+            <h3 id="eventModalTitle"><i class="fa-solid fa-calendar-plus" style="color: var(--accent-color); margin-right: 8px;"></i> Termin / Vorlesung hinzufügen</h3>
+            <form id="eventForm">
+                <input type="hidden" id="eventEditId" value="">
+                <div class="input-group">
+                    <label for="eventTitle">Titel</label>
+                    <input type="text" id="eventTitle" placeholder="Titel eingeben..." required>
+                </div>
+                <div class="input-group">
+                    <label for="eventDate">Startdatum</label>
+                    <input type="date" id="eventDate" required>
+                </div>
+                <div class="input-group">
+                    <label for="eventRepeat">Wiederholung</label>
+                    <select id="eventRepeat" class="styled-select">
+                        <option value="none">Keine Wiederholung</option>
+                        <option value="weekly">Jede Woche</option>
+                    </select>
+                </div>
+                <div class="input-group" id="repeatUntilGroup" style="display: none;">
+                    <label for="eventRepeatUntil">Wiederholen bis</label>
+                    <input type="date" id="eventRepeatUntil">
+                </div>
+                <div class="input-group">
+                    <label for="eventTypeTimeMode">Zeit-Modus</label>
+                    <select id="eventTypeTimeMode" class="styled-select">
+                        <option value="slot">Von - Bis Uhrzeit</option>
+                        <option value="allDay">Ganztägig</option>
+                    </select>
+                </div>
+                <div class="input-group" id="timeSlotGroup">
+                    <div style="display: flex; gap: 12px;">
+                        <div style="flex: 1;">
+                            <label for="eventStartHour">Start</label>
+                            <select id="eventStartHour" class="styled-select"></select>
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="eventEndHour">Ende</label>
+                            <select id="eventEndHour" class="styled-select"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Farbe wählen</label>
+                    <div class="color-picker-palette" id="eventColorPalette">
+                        <div class="color-dot active" data-color="#06b6d4" style="background: #06b6d4;"></div>
+                        <div class="color-dot" data-color="#3b82f6" style="background: #3b82f6;"></div>
+                        <div class="color-dot" data-color="#8b5cf6" style="background: #8b5cf6;"></div>
+                        <div class="color-dot" data-color="#ec4899" style="background: #ec4899;"></div>
+                        <div class="color-dot" data-color="#22c55e" style="background: #22c55e;"></div>
+                        <div class="color-dot" data-color="#eab308" style="background: #eab308;"></div>
+                        <div class="color-dot" data-color="#f97316" style="background: #f97316;"></div>
+                    </div>
+                    <input type="hidden" id="eventColor" value="#06b6d4">
+                </div>
+                <div class="input-group">
+                    <label for="eventType">Kategorie</label>
+                    <select id="eventType" class="styled-select">
+                        <option value="uni">Uni</option>
+                        <option value="exam">Prüfung</option>
+                        <option value="private">Privat</option>
+                    </select>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="header-icon-btn hidden" id="deleteEventBtn" title="Löschen"><i class="fa-solid fa-trash"></i></button>
+                    <div style="display: flex; gap: 12px; margin-left: auto;">
+                        <button type="button" class="btn-secondary" id="closeEventModalBtn">Abbrechen</button>
+                        <button type="submit" class="btn-primary" id="saveEventBtn">Speichern</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="financeModal">
+        <div class="modal-card">
+            <h3>Neue Transaktion / Ziel</h3>
+            <form id="financeForm">
+                <div class="input-group">
+                    <label for="finTitle">Bezeichnung</label>
+                    <input type="text" id="finTitle" placeholder="Titel..." required>
+                </div>
+                <div class="input-group">
+                    <label for="finAmount">Betrag (€)</label>
+                    <input type="number" step="0.01" id="finAmount" placeholder="0.00" required>
+                </div>
+                <div class="input-group">
+                    <label for="finType">Art</label>
+                    <select id="finType" class="styled-select">
+                        <option value="income">Einnahme</option>
+                        <option value="expense">Ausgabe</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="finMonthlyGoalInput">Monatliches Budget-Ziel (€)</label>
+                    <input type="number" step="1" id="finMonthlyGoalInput" placeholder="800">
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn-secondary" id="closeFinanceModalBtn">Abbrechen</button>
+                    <button type="submit" class="btn-primary">Speichern</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="transactionListModal">
+        <div class="modal-card" style="width: 450px;">
+            <h3 id="txModalTitle">Einträge</h3>
+            <div id="txListContainer" style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin: 16px 0;"></div>
+            <div class="modal-buttons">
+                <button type="button" class="btn-primary" id="closeTxListModalBtn">Schließen</button>
+            </div>
+        </div>
+    </div>
+
+        <!-- Einstellungs-Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal-card" style="max-width: 480px; background: #0b132b; border: 1px solid rgba(6, 182, 212, 0.2); box-shadow: 0 15px 35px rgba(0,0,0,0.6);">
+            <h3 style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; font-size: 1.2rem; color: #fff;">
+                <i class="fa-solid fa-gear" style="color: var(--accent-color);"></i> Einstellungen & Design
+            </h3>
+            
+            <div style="display: flex; flex-direction: column; gap: 20px; margin-bottom: 24px; font-size: 0.85rem;">
+                
+                <!-- Name anpassen -->
+                <div>
+                    <label style="display: block; color: var(--text-muted); margin-bottom: 6px; font-weight: 500;" for="userNameInput">Dein Name (Begrüßung)</label>
+                    <input type="text" id="userNameInput" placeholder="z.B. Tobias" style="width: 100%; padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.15); outline: none;">
+                </div>
+
+                <!-- Akzentfarbe / Theme Farbwahl -->
+                <div>
+                    <label style="display: block; color: var(--text-muted); margin-bottom: 8px; font-weight: 500;">Akzentfarbe (Buttons & Highlights)</label>
+                    <div class="color-picker-palette" id="themeAccentPalette" style="display: flex; gap: 12px;">
+                        <div class="color-dot" data-accent="#06b6d4" style="width: 32px; height: 32px; border-radius: 50%; background: #06b6d4; cursor: pointer; border: 2px solid transparent;" title="Cyan"></div>
+                        <div class="color-dot" data-accent="#3b82f6" style="width: 32px; height: 32px; border-radius: 50%; background: #3b82f6; cursor: pointer; border: 2px solid transparent;" title="Blau"></div>
+                        <div class="color-dot" data-accent="#22c55e" style="width: 32px; height: 32px; border-radius: 50%; background: #22c55e; cursor: pointer; border: 2px solid transparent;" title="Grün"></div>
+                        <div class="color-dot" data-accent="#ec4899" style="width: 32px; height: 32px; border-radius: 50%; background: #ec4899; cursor: pointer; border: 2px solid transparent;" title="Pink"></div>
+                        <div class="color-dot" data-accent="#f97316" style="width: 32px; height: 32px; border-radius: 50%; background: #f97316; cursor: pointer; border: 2px solid transparent;" title="Orange"></div>
+                    </div>
+                </div>
+
+                <!-- Schöne Hintergrund-Auswahl (Kacheln statt Dropdown) -->
+                <div>
+                    <label style="display: block; color: var(--text-muted); margin-bottom: 8px; font-weight: 500;">Hintergrund-Design</label>
+                    <div class="bg-options-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                        <div class="bg-card" data-bg="dark" style="background: #050b14; border: 2px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 10px; cursor: pointer; text-align: center; color: #fff; transition: all 0.2s;">
+                            <i class="fa-solid fa-moon" style="font-size: 1.2rem; margin-bottom: 4px; display: block; color: #06b6d4;"></i>
+                            <span style="font-size: 0.8rem;">Tiefschwarz</span>
+                        </div>
+                        <div class="bg-card" data-bg="midnight" style="background: #0f172a; border: 2px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 10px; cursor: pointer; text-align: center; color: #fff; transition: all 0.2s;">
+                            <i class="fa-solid fa-cloud-moon" style="font-size: 1.2rem; margin-bottom: 4px; display: block; color: #3b82f6;"></i>
+                            <span style="font-size: 0.8rem;">Mitternacht</span>
+                        </div>
+                        <div class="bg-card" data-bg="space" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?q=80&w=200&auto=format&fit=crop'); background-size: cover; border: 2px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 10px; cursor: pointer; text-align: center; color: #fff; transition: all 0.2s;">
+                            <i class="fa-solid fa-rocket" style="font-size: 1.2rem; margin-bottom: 4px; display: block; color: #ec4899;"></i>
+                            <span style="font-size: 0.8rem;">Cosmic Space</span>
+                        </div>
+                        <div class="bg-card" data-bg="cyber" style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=200&auto=format&fit=crop'); background-size: cover; border: 2px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 10px; cursor: pointer; text-align: center; color: #fff; transition: all 0.2s;">
+                            <i class="fa-solid fa-microchip" style="font-size: 1.2rem; margin-bottom: 4px; display: block; color: #22c55e;"></i>
+                            <span style="font-size: 0.8rem;">Cyberpunk</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Eigenes Hintergrundbild per URL -->
+                <div>
+                    <label style="display: block; color: var(--text-muted); margin-bottom: 6px; font-weight: 500;" for="customBgInput">Oder eigenes Hintergrundbild (Bild-URL)</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="url" id="customBgInput" placeholder="https://beispiel.de/bild.jpg" style="flex: 1; padding: 8px 10px; border-radius: 8px; background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.15); outline: none;">
+                        <button type="button" id="applyCustomBgBtn" class="add-event-btn" style="padding: 8px 14px; border-radius: 8px; background: var(--accent-color); color: #000; font-weight: 600; border: none; cursor: pointer;">Setzen</button>
+                    </div>
+                </div>
+
+                <!-- Daten-Management -->
+                <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: var(--text-muted);">Lokale Daten zurücksetzen:</span>
+                    <button id="resetDataBtn" class="add-event-btn" style="background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #ef4444; font-size: 0.75rem; padding: 6px 12px; border-radius: 8px; cursor: pointer;">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Reset
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="modal-buttons" style="display: flex;">
+                <button type="button" class="btn-primary" id="closeSettingsModalBtn" style="width: 100%; padding: 10px; border-radius: 10px; background: var(--accent-color); color: #000; font-weight: 600; border: none; cursor: pointer;">Schließen</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
