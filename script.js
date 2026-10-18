@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!deleteMode) card.target = '_blank';
             card.className = 'shortcut-card';
             
-            // Falls der Shortcut bereits zum Löschen markiert ist (z.B. nach einem Re-Render)
             if (selectedIndicesToDelete.has(index)) {
                 card.classList.add('selected-for-deletion');
                 card.style.borderColor = '#ef4444';
@@ -50,14 +49,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (deleteMode) {
                     e.preventDefault();
                     if (selectedIndicesToDelete.has(index)) {
-                        // Abwählen: Visuelle Effekte entfernen
                         selectedIndicesToDelete.delete(index);
                         card.classList.remove('selected-for-deletion');
                         card.style.borderColor = '';
                         card.style.backgroundColor = '';
                         card.style.boxShadow = '';
                     } else {
-                        // Auswählen: Rot aufleuchten lassen
                         selectedIndicesToDelete.add(index);
                         card.classList.add('selected-for-deletion');
                         card.style.borderColor = '#ef4444';
@@ -138,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- KALENDER LOGIK ---
-    const defaultEvents = []; // Komplett leer, ohne Standard-Beispieltermin
+    const defaultEvents = []; 
 
     let events = JSON.parse(localStorage.getItem('dashboard_events')) || defaultEvents;
     let currentView = 'week';
@@ -550,7 +547,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCalendar();
 
     // --- SPOTIFY LIVE API (DIREKT IM BROWSER MIT PKCE) ---
-    const spotifyClientId = '526176a9b56b44c795e25429109c402e'; // Trage hier deine Client ID aus dem Spotify Developer Dashboard ein
+    const spotifyClientId = '526176a9b56b44c795e25429109c402e'; 
     const spotifyRedirectUri = window.location.origin + window.location.pathname;
 
     const spotifyLoginBtn = document.getElementById('spotifyLoginBtn');
@@ -565,8 +562,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const spotifyPlayPause = document.getElementById('spotifyPlayPause');
     const spotifyPrev = document.getElementById('spotifyPrev');
     const spotifyNext = document.getElementById('spotifyNext');
+    const spotifyShuffle = document.getElementById('spotifyShuffle');
+    const spotifyLike = document.getElementById('spotifyLike');
 
     let isPlaying = false;
+    let isShuffled = false;
+    let currentTrackUri = null;
+    let isLiked = false;
 
     // Hilfsfunktionen für PKCE
     const generateRandomString = (length) => {
@@ -636,7 +638,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             window.localStorage.setItem('code_verifier', codeVerifier);
 
-            const scope = 'user-read-playback-state user-modify-playback-state user-read-currently-playing';
+            const scope = 'user-read-playback-state user-modify-playback-state user-read-currently-playing user-library-read user-library-modify';
             const authUrl = new URL('https://accounts.spotify.com/authorize');
 
             authUrl.search = new URLSearchParams({
@@ -652,6 +654,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Prüfen ob Song geliked ist
+    async function checkIfTrackLiked(trackId) {
+        if (!trackId) return;
+        const token = localStorage.getItem('spotify_access_token');
+        if (!token) return;
+        try {
+            const res = await fetch(`https://api.spotify.com/v1/me/library/contains?ids=${trackId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                isLiked = data[0];
+                if (spotifyLike) {
+                    if (isLiked) {
+                        spotifyLike.classList.add('active');
+                        spotifyLike.style.color = '#1ed760';
+                    } else {
+                        spotifyLike.classList.remove('active');
+                        spotifyLike.style.color = '';
+                    }
+                }
+            }
+        } catch (err) {
+            console.error("Check liked error:", err);
+        }
+    }
+
     // 3. Aktuellen Song abrufen (Poll alle 3 Sekunden)
     async function fetchCurrentlyPlaying() {
         const token = localStorage.getItem('spotify_access_token');
@@ -663,18 +692,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const res = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
+            const res = await fetch('https://api.spotify.com/v1/me/player', {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
             if (res.status === 401) {
-                // Token abgelaufen
                 localStorage.removeItem('spotify_access_token');
                 return;
             }
 
             if (res.status === 204 || res.status > 300) {
-                return; // Nichts wird abgespielt
+                return; 
             }
 
             const data = await res.json();
@@ -686,9 +714,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 spotifyTitle.textContent = data.item.name;
                 spotifyArtist.textContent = data.item.artists.map(a => a.name).join(', ');
                 isPlaying = data.is_playing;
+                isShuffled = data.shuffle_state;
 
                 if (spotifyPlayPauseIcon) {
                     spotifyPlayPauseIcon.className = isPlaying ? "fa-solid fa-pause" : "fa-solid fa-play";
+                }
+
+                if (spotifyShuffle) {
+                    if (isShuffled) {
+                        spotifyShuffle.classList.add('active-green');
+                        spotifyShuffle.style.color = '#1ed760';
+                    } else {
+                        spotifyShuffle.classList.remove('active-green');
+                        spotifyShuffle.style.color = '';
+                    }
+                }
+
+                if (currentTrackUri !== data.item.id) {
+                    currentTrackUri = data.item.id;
+                    checkIfTrackLiked(currentTrackUri);
                 }
 
                 if (data.item.album && data.item.album.images.length > 0) {
@@ -705,7 +749,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(fetchCurrentlyPlaying, 3000);
     fetchCurrentlyPlaying();
 
-    // 4. Player-Steuerung (Play, Pause, Skip)
+    // 4. Player-Steuerung (Play, Pause, Skip, Shuffle, Like)
     async function sendSpotifyCommand(endpoint, method = 'PUT') {
         const token = localStorage.getItem('spotify_access_token');
         if (!token) return;
@@ -715,7 +759,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: method,
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-            setTimeout(fetchCurrentlyPlaying, 4005);
+            setTimeout(fetchCurrentlyPlaying, 400);
         } catch (err) {
             console.error("Spotify Control Error:", err);
         }
@@ -742,6 +786,50 @@ document.addEventListener('DOMContentLoaded', () => {
     if (spotifyPrev) {
         spotifyPrev.addEventListener('click', () => sendSpotifyCommand('previous', 'POST'));
     }
+
+    if (spotifyShuffle) {
+        spotifyShuffle.addEventListener('click', () => {
+            const newShuffleState = !isShuffled;
+            sendSpotifyCommand(`shuffle?state=${newShuffleState}`, 'PUT');
+            isShuffled = newShuffleState;
+            if (isShuffled) {
+                spotifyShuffle.classList.add('active-green');
+                spotifyShuffle.style.color = '#1ed760';
+            } else {
+                spotifyShuffle.classList.remove('active-green');
+                spotifyShuffle.style.color = '';
+            }
+        });
+    }
+
+    if (spotifyLike) {
+        spotifyLike.addEventListener('click', async () => {
+            if (!currentTrackUri) return;
+            const token = localStorage.getItem('spotify_access_token');
+            if (!token) return;
+
+            const method = isLiked ? 'DELETE' : 'PUT';
+            try {
+                const res = await fetch(`https://api.spotify.com/v1/me/library?ids=${currentTrackUri}`, {
+                    method: method,
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    isLiked = !isLiked;
+                    if (isLiked) {
+                        spotifyLike.classList.add('active');
+                        spotifyLike.style.color = '#1ed760';
+                    } else {
+                        spotifyLike.classList.remove('active');
+                        spotifyLike.style.color = '';
+                    }
+                }
+            } catch (err) {
+                console.error("Like toggle error:", err);
+            }
+        });
+    }
+
 
     // --- AKTIEN & MÄRKTE MIT FAVORITEN & EURO-UMSTELLUNG ---
     let stockFavorites = JSON.parse(localStorage.getItem('stock_favorites')) || [
@@ -1253,26 +1341,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- GLOBALE MODAL-STEUERUNG (ESC-TASTE) ---
     window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-            // Einstellungs-Modal schließen
             if (settingsModal && settingsModal.classList.contains('active')) {
                 settingsModal.classList.remove('active');
             }
-            // Termin-Modal
             if (eventModal && eventModal.classList.contains('active')) {
                 eventModal.classList.remove('active');
                 if (eventForm) eventForm.reset();
             }
-            // Shortcut-Modal
             if (shortcutModal && shortcutModal.classList.contains('active')) {
                 shortcutModal.classList.remove('active');
                 if (shortcutForm) shortcutForm.reset();
             }
-            // Finanz-Modal
             if (financeModal && financeModal.classList.contains('active')) {
                 financeModal.classList.remove('active');
                 if (financeForm) financeForm.reset();
             }
-            // Transaktions-Liste
             if (transactionListModal && transactionListModal.classList.contains('active')) {
                 transactionListModal.classList.remove('active');
             }
@@ -1281,40 +1364,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- SIDEBAR NAVIGATION & WIDGET FOKUS ---
     const sidebarLinks = document.querySelectorAll('.sidebar-link');
-    
-    // Optional: Gib allen Haupt-Containern deiner Widgets die Klasse "widget-container", 
-    // damit wir den Effekt global steuern können.
     const allWidgetContainers = document.querySelectorAll('.widget-container');
 
     sidebarLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             
-            // 1. Sidebar-UI aktualisieren (aktiven Button markieren)
             sidebarLinks.forEach(l => l.classList.remove('active'));
             link.classList.add('active');
             
-            // 2. Ziel-Widget finden
             const targetId = link.getAttribute('data-target');
             
             if (targetId === 'dashboard-top') {
-                // Zurück nach ganz oben scrollen
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-                
-                // Alle Fokus-Effekte entfernen
                 allWidgetContainers.forEach(w => w.classList.remove('widget-focus'));
             } else {
                 const targetWidget = document.getElementById(targetId);
                 
                 if (targetWidget) {
-                    // 3. Weich zum Widget scrollen (mittig im Bildschirm platzieren)
                     targetWidget.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    
-                    // 4. Fokus-Effekt anwenden (Vordergrund)
                     allWidgetContainers.forEach(w => w.classList.remove('widget-focus'));
                     targetWidget.classList.add('widget-focus');
                     
-                    // 5. Fokus-Effekt nach 2 Sekunden langsam wieder ausblenden
                     setTimeout(() => {
                         targetWidget.classList.remove('widget-focus');
                     }, 2000);
@@ -1328,7 +1399,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedBgStyle = localStorage.getItem('dashboard_bg') || 'dark';
     const savedName = localStorage.getItem('dashboard_username') || 'Tobias';
 
-    // Name im Header initialisieren
     const welcomeTitle = document.getElementById('welcomeTitle');
     if (welcomeTitle) welcomeTitle.textContent = `Hallo, ${savedName}!`;
 
@@ -1347,7 +1417,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     applyAccentColor(savedAccent);
 
-    // Hintergrund anwenden (integriert Presets und eigene URLs)
     function applyBgStyle(styleOrUrl) {
         const body = document.body;
         body.style.backgroundImage = 'none';
@@ -1363,17 +1432,15 @@ document.addEventListener('DOMContentLoaded', () => {
             body.style.backgroundSize = 'cover';
             body.style.backgroundAttachment = 'fixed';
         } else if (styleOrUrl.startsWith('http')) {
-            // Eigene Bild-URL vom Nutzer
             body.style.backgroundImage = `linear-gradient(rgba(5, 11, 20, 0.8), rgba(5, 11, 20, 0.8)), url("${styleOrUrl}")`;
             body.style.backgroundSize = 'cover';
             body.style.backgroundAttachment = 'fixed';
         } else {
-            body.style.backgroundColor = '#050b14'; // Standard Tiefschwarz
+            body.style.backgroundColor = '#050b14';
         }
     }
     applyBgStyle(savedBgStyle);
 
-    // Modal Steuerung
     const settingsModal = document.getElementById('settingsModal');
     const openSettingsBtn = document.getElementById('openSettingsBtn');
     const closeSettingsModalBtn = document.getElementById('closeSettingsModalBtn');
@@ -1391,7 +1458,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Kachel-Auswahl für Hintergründe
     const bgCards = document.querySelectorAll('.bg-card');
     bgCards.forEach(card => {
         const bgVal = card.getAttribute('data-bg');
@@ -1406,7 +1472,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Eigene Bild-URL setzen
     const customBgInput = document.getElementById('customBgInput');
     const applyCustomBgBtn = document.getElementById('applyCustomBgBtn');
     if (applyCustomBgBtn && customBgInput) {
@@ -1421,7 +1486,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Akzentfarben-Punkte
     const accentDots = document.querySelectorAll('#themeAccentPalette .color-dot');
     accentDots.forEach(dot => {
         const col = dot.getAttribute('data-accent');
@@ -1436,7 +1500,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Daten zurücksetzen
     const resetDataBtn = document.getElementById('resetDataBtn');
     if (resetDataBtn) {
         resetDataBtn.addEventListener('click', () => {
@@ -1541,19 +1604,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const t = translations[currentLang];
         const savedName = localStorage.getItem('dashboard_username') || 'Tobias';
 
-        // Header Begrüßung
         const welcomeTitle = document.getElementById('welcomeTitle');
         const welcomeSub = document.getElementById('welcomeSub');
         if (welcomeTitle) welcomeTitle.textContent = `${t.welcome}${savedName}!`;
         if (welcomeSub) welcomeSub.textContent = t.subtitle;
 
-        // Sprach-Button Text aktualisieren
         const langBtn = document.getElementById('langToggleBtn');
         if (langBtn) langBtn.textContent = t.langBtn;
 
-        // Spezielle Elemente direkt übersetzen (Buttons, Input-Placeholder etc.)
-        const spotifyLoginBtn = document.getElementById('spotifyLoginBtn');
-        if (spotifyLoginBtn) spotifyLoginBtn.textContent = currentLang === 'en' ? 'Connect' : 'Verbinden';
+        const spotifyLoginBtnText = document.getElementById('spotifyLoginBtn');
+        if (spotifyLoginBtnText) spotifyLoginBtnText.textContent = currentLang === 'en' ? 'Connect' : 'Verbinden';
 
         const weatherSearchInput = document.getElementById('weatherSearchInput');
         if (weatherSearchInput) {
@@ -1565,7 +1625,6 @@ document.addEventListener('DOMContentLoaded', () => {
             notesTextarea.placeholder = t.notesPlaceholder;
         }
 
-        // Alle Elemente mit data-i18n Attribut automatisch übersetzen
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
             if (t[key]) {
@@ -1578,7 +1637,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Sprach-Button Klick-Event (HIER HATTE ES GEFEHLT!)
     const langToggleBtn = document.getElementById('langToggleBtn');
     if (langToggleBtn) {
         langToggleBtn.addEventListener('click', () => {
@@ -1588,11 +1646,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Beim Start einmal ausführen
     updateTexts();
-    
-
-    // --- INITIALISIERUNG BEIM LADEN DER SEITE ---
     renderShortcuts();
     renderCalendar();
     updateFinanceUI();

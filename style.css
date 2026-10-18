@@ -1038,3 +1038,36 @@ body {
     transform: scale(1.08);
     background-color: #1fdf64 !important;
 }
+
+.spotify-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 10px;
+}
+
+.spotify-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    overflow: hidden;
+    text-align: left;
+}
+
+.like-icon {
+    font-size: 1.2rem;
+    color: var(--text-muted, #94a3b8);
+    cursor: pointer;
+    transition: color 0.2s, transform 0.2s;
+    flex-shrink: 0;
+}
+
+.like-icon:hover {
+    color: #1ed760;
+    transform: scale(1.15);
+}
+
+.like-icon.active {
+    color: #1ed760 !important;
+}
