@@ -1397,7 +1397,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- EINSTELLUNGEN, NAME & HINTERGRÜNDE ---
     const savedAccent = localStorage.getItem('dashboard_accent') || '#06b6d4';
     const savedBgStyle = localStorage.getItem('dashboard_bg') || 'dark';
-    const savedName = localStorage.getItem('dashboard_username') || 'Tobias';
+    const savedName = localStorage.getItem('dashboard_username') || 'User';
 
     const welcomeTitle = document.getElementById('welcomeTitle');
     if (welcomeTitle) welcomeTitle.textContent = `Hallo, ${savedName}!`;
@@ -1406,7 +1406,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userNameInput) {
         userNameInput.value = savedName;
         userNameInput.addEventListener('input', (e) => {
-            const name = e.target.value.trim() || 'Tobias';
+            const name = e.target.value.trim() || 'User';
             localStorage.setItem('dashboard_username', name);
             if (welcomeTitle) welcomeTitle.textContent = `Hallo, ${name}!`;
         });
@@ -1602,7 +1602,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateTexts() {
         const t = translations[currentLang];
-        const savedName = localStorage.getItem('dashboard_username') || 'Tobias';
+        const savedName = localStorage.getItem('dashboard_username') || 'User';
 
         const welcomeTitle = document.getElementById('welcomeTitle');
         const welcomeSub = document.getElementById('welcomeSub');
