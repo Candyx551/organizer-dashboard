@@ -138,9 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- KALENDER LOGIK ---
-    const defaultEvents = [
-        { id: "1", title: "Mathe 1 Vorlesung", date: "2026-10-14", startHour: "10:00", endHour: "12:00", type: "uni", allDay: false, color: "#06b6d4", repeat: "none", exceptions: [] }
-    ];
+    const defaultEvents = []; // Komplett leer, ohne Standard-Beispieltermin
 
     let events = JSON.parse(localStorage.getItem('dashboard_events')) || defaultEvents;
     let currentView = 'week';
