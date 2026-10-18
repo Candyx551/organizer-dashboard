@@ -138,11 +138,13 @@
                             <i id="spotifyCoverIcon" class="fa-solid fa-music fallback-icon"></i>
                         </div>
                         <div class="spotify-info">
-                            <div class="spotify-text">
-                                <div id="spotifyTitle" class="track-title">Titel</div>
-                                <div id="spotifyArtist" class="track-artist">Künstler</div>
+                            <div class="spotify-text" style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; width: 100%;">
+                                <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                    <div id="spotifyTitle" class="track-title">Titel</div>
+                                    <div id="spotifyArtist" class="track-artist">Künstler</div>
+                                </div>
+                                <i id="spotifyLike" class="fa-solid fa-heart like-icon" style="cursor: pointer; flex-shrink: 0; margin-left: 15px;"></i>
                             </div>
-                            <i id="spotifyLike" class="fa-solid fa-heart like-icon"></i>
                         </div>
                         <div class="spotify-controls">
                             <i id="spotifyShuffle" class="fa-solid fa-shuffle control-secondary"></i>
