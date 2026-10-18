@@ -547,21 +547,50 @@ body {
 }
 
 /* ==========================================================================
-   MODAL STYLING & MODERNE FARB-PALETTE
+   MODAL STYLING & PERFEKTE ZENTRIERUNG (FIXED)
    ========================================================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(5, 11, 20, 0.8);
+    backdrop-filter: blur(10px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    box-sizing: border-box;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    display: flex;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Der eigentliche Modal-Container */
 .modal-card {
-    background: rgba(13, 27, 42, 0.85);
+    background: #0f172a;
     border: 1px solid var(--card-border-glow);
     border-radius: 24px;
-    padding: 30px;
-    width: 420px;
-    max-width: 90vw;
-    backdrop-filter: blur(30px);
+    padding: 28px;
+    width: 100%;
+    max-width: 440px;
+    max-height: 85vh; /* Verhindert, dass das Fenster höher als der Bildschirm wird */
+    overflow-y: auto;  /* Macht den Inhalt intern scrollbar, falls zu lang */
     box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
     display: flex;
     flex-direction: column;
     gap: 16px;
     color: var(--text-primary);
+    box-sizing: border-box;
+    margin: auto;
 }
 
 .modal-card h3 {
@@ -607,7 +636,7 @@ body {
     box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
 }
 
-/* Neue moderne Farb-Palette (Runde Farbpunkte) */
+/* Farb-Palette (Runde Farbpunkte) */
 .color-picker-palette {
     display: flex;
     gap: 10px;
@@ -628,8 +657,8 @@ body {
     transform: scale(1.15);
 }
 
-.color-dot.active {
-    border-color: #fff;
+.color-dot.active, .color-dot.active-dot {
+    border-color: #fff !important;
     box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
     transform: scale(1.1);
 }
@@ -637,8 +666,11 @@ body {
 .modal-buttons {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     gap: 12px;
     margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .btn-primary {
@@ -657,6 +689,7 @@ body {
 .btn-primary:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
+    filter: brightness(1.15);
 }
 
 .btn-secondary {
@@ -677,7 +710,7 @@ body {
 }
 
 /* ==========================================================================
-   SIDEBAR TOGGLE & MODAL OVERLAY FIX
+   SIDEBAR TOGGLE & ANIMATIONEN
    ========================================================================== */
 .sidebar-toggle-btn {
     background: rgba(6, 182, 212, 0.08);
@@ -710,11 +743,6 @@ body {
     display: none;
 }
 
-.sidebar.collapsed .sidebar-header {
-    padding-left: 0;
-    justify-content: center;
-}
-
 .sidebar.collapsed .logo {
     display: none;
 }
@@ -728,307 +756,20 @@ body {
     margin-left: 90px;
 }
 
-/* Zeit-Auswahl kompakter machen */
+/* Zeit-Auswahl im Modal */
 #timeSlotGroup .styled-select {
     padding: 8px 10px;
     font-size: 0.8rem;
     height: 38px;
 }
 
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(5, 11, 20, 0.8);
-    backdrop-filter: blur(10px);
-    display: none !important;
-    align-items: flex-start; /* Modal weiter oben ansetzen */
-    justify-content: center;
-    padding-top: 60px; /* Abstand von oben */
-    z-index: 1000;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.4s ease;
-}
-
-.modal-overlay.active {
-    display: flex !important;
-    opacity: 1;
-    pointer-events: auto;
-}
-
-/* --- MODERNES SPOTIFY WIDGET --- */
-.spotify-player-modern {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    width: 100%;
-    padding: 10px 5px;
-}
-
-/* Cover Styling */
-.spotify-cover-wrapper {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    border-radius: 12px;
-    overflow: hidden;
-    background: rgba(255, 255, 255, 0.05);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-}
-
-#spotifyCoverImg {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: none; /* Wird vom JavaScript aktiviert */
-}
-
-.fallback-icon {
-    font-size: 3rem;
-    color: var(--text-muted, #9ca3af);
-}
-
-/* Info Bereich (Text & Herz) */
-.spotify-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding: 0 5px;
-}
-
-.spotify-text {
-    overflow: hidden;
-    white-space: nowrap;
-}
-
-.track-title {
-    font-size: 1.15rem;
-    font-weight: 600;
-    color: #ffffff;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-.track-artist {
-    font-size: 0.85rem;
-    color: var(--text-muted, #9ca3af);
-    margin-top: 4px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-.like-icon {
-    color: var(--text-muted, #9ca3af);
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.like-icon:hover {
-    color: #1ed760; /* Spotify Grün */
-}
-
-/* Steuerungselemente */
-.spotify-controls {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 22px;
-    width: 100%;
-    margin-top: 5px;
-}
-
-.control-primary {
-    font-size: 1.4rem;
-    color: #ffffff;
-    cursor: pointer;
-    transition: color 0.2s, transform 0.2s;
-}
-
-.control-primary:hover {
-    color: #1ed760;
-    transform: scale(1.1);
-}
-
-.control-secondary {
-    font-size: 1.1rem;
-    color: var(--text-muted, #9ca3af);
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.control-secondary:hover {
-    color: #ffffff;
-}
-
-/* Runder Play/Pause Button */
-.play-pause-btn {
-    width: 50px;
-    height: 50px;
-    background-color: #1ed760;
-    color: #000000;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.3rem;
-    cursor: pointer;
-    transition: transform 0.2s, background-color 0.2s;
-    box-shadow: 0 4px 12px rgba(30, 215, 96, 0.3);
-}
-
-.play-pause-btn:hover {
-    transform: scale(1.08);
-    background-color: #1fdf64;
-}
-
-/* --- MODERNES SPOTIFY WIDGET --- */
-.spotify-player-modern {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-    max-width: 260px; /* Verhindert, dass es riesig wird */
-    margin: 0 auto;   /* Zentriert das Widget im Grid */
-    padding: 10px 0;
-}
-
-.spotify-cover-wrapper {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    border-radius: 12px;
-    overflow: hidden;
-    background: rgba(255, 255, 255, 0.05);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-}
-
-#spotifyCoverImg {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: none;
-}
-
-.fallback-icon {
-    font-size: 3rem;
-    color: var(--text-muted, #9ca3af);
-}
-
-.spotify-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding: 0 5px;
-}
-
-.spotify-text {
-    overflow: hidden;
-    white-space: nowrap;
-}
-
-.track-title {
-    font-size: 1.15rem;
-    font-weight: 600;
-    color: #ffffff;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-.track-artist {
-    font-size: 0.85rem;
-    color: var(--text-muted, #9ca3af);
-    margin-top: 4px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-.like-icon {
-    color: var(--text-muted, #9ca3af);
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.like-icon:hover {
-    color: #1ed760;
-}
-
-.spotify-controls {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 22px;
-    width: 100%;
-    margin-top: 5px;
-}
-
-.control-primary {
-    font-size: 1.4rem;
-    color: #ffffff;
-    cursor: pointer;
-    transition: color 0.2s, transform 0.2s;
-}
-
-.control-primary:hover {
-    color: #1ed760;
-    transform: scale(1.1);
-}
-
-.control-secondary {
-    font-size: 1.1rem;
-    color: var(--text-muted, #9ca3af);
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-.control-secondary:hover {
-    color: #ffffff;
-}
-
-.play-pause-btn {
-    width: 50px;
-    height: 50px;
-    background-color: #1ed760;
-    color: #000000;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.3rem;
-    cursor: pointer;
-    transition: transform 0.2s, background-color 0.2s;
-    box-shadow: 0 4px 12px rgba(30, 215, 96, 0.3);
-}
-
-.play-pause-btn:hover {
-    transform: scale(1.08);
-    background-color: #1fdf64;
-}
-
-/* Neuer Status für gedrückte Buttons */
-.active-green {
-    color: #1ed760 !important;
-}
-
 /* --- WETTER SUCHE UI --- */
 .weather-search-container {
     display: flex;
     align-items: center;
-    background: rgba(255, 255, 255, 0.05); /* Dunkler, transparenter Hintergrund */
+    background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 24px; /* Schöne abgerundete Ecken */
+    border-radius: 24px;
     padding: 4px 6px 4px 14px;
     width: 100%;
     max-width: 320px;
@@ -1036,9 +777,8 @@ body {
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Leucht-Effekt, wenn man in das Feld klickt */
 .weather-search-container:focus-within {
-    border-color: #06b6d4; /* Passend zu deinen restlichen Akzentfarben */
+    border-color: #06b6d4;
     background: rgba(255, 255, 255, 0.08);
     box-shadow: 0 0 10px rgba(6, 182, 212, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
@@ -1058,7 +798,6 @@ body {
     color: var(--text-muted, rgba(255, 255, 255, 0.4));
 }
 
-/* Buttons in der Suchleiste */
 .weather-icon-btn {
     background: transparent;
     border: none;
@@ -1079,11 +818,6 @@ body {
     color: #ffffff;
 }
 
-.weather-icon-btn:active {
-    transform: scale(0.9);
-}
-
-/* Kleine visuelle Trennlinie zwischen Suche und GPS-Button */
 .weather-search-divider {
     width: 1px;
     height: 20px;
@@ -1091,46 +825,31 @@ body {
     margin: 0 4px;
 }
 
-/* Standort-Button bekommt beim Hovern die blaue Farbe */
 .locate-btn:hover {
     color: #06b6d4;
 }
 
-/* --- FINANZEN MANAGER HOVER ANIMATIONEN --- */
-
-/* 1. Einnahmen & Ausgaben Container (Klickbar für die Listen) */
+/* --- FINANZEN & HOVER ANIMATIONEN --- */
 #openIncomeList, 
 #openExpenseList {
     cursor: pointer;
     transition: all 0.2s ease-in-out;
-    border-radius: 8px; /* Falls sie noch nicht abgerundet waren */
-    padding: 5px; /* Etwas Platz für den Hover-Hintergrund */
+    border-radius: 8px;
+    padding: 5px;
 }
 
 #openIncomeList:hover, 
 #openExpenseList:hover {
-    transform: translateY(-3px); /* Hebt die Karte leicht an */
-    background: rgba(255, 255, 255, 0.08); /* Leuchtet leicht auf */
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.08);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* 2. Woche / Monat / Jahr Umschalter */
-#financeViewSwitcher .view-btn {
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-}
-
 #financeViewSwitcher .view-btn:hover:not(.active) {
-    background: rgba(255, 255, 255, 0.15); /* Hellerer Hintergrund beim Drüberfahren */
-    transform: scale(1.05); /* Wird eine Spur größer */
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.05);
 }
 
-/* Aktiver Button im Switcher soll etwas leuchten */
-#financeViewSwitcher .view-btn.active {
-    box-shadow: 0 0 10px rgba(6, 182, 212, 0.3); /* Leichter Glow in Akzentfarbe */
-}
-
-/* 3. Icon Buttons: Privacy (Auge) & Hinzufügen (Plus) */
 #toggleFinancePrivacyBtn, 
 #openFinanceModalBtn {
     cursor: pointer;
@@ -1139,84 +858,38 @@ body {
 
 #toggleFinancePrivacyBtn:hover, 
 #openFinanceModalBtn:hover {
-    color: #06b6d4; /* Deine Akzentfarbe */
-    transform: scale(1.15) rotate(5deg); /* Leichter Zoom mit minimaler Drehung für Dynamik */
+    color: #06b6d4;
+    transform: scale(1.15) rotate(5deg);
 }
 
-/* 4. Mülleimer-Icon in der Transaktionsliste */
 .delete-tx {
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .delete-tx:hover {
-    color: #ef4444 !important; /* Leuchtend Rot beim Hovern */
+    color: #ef4444 !important;
     transform: scale(1.2);
-}
-
-/* Aktiver Link in der Sidebar (z.B. hellblau hinterlegt, wie in deinem Bild) */
-.sidebar-link.active {
-    background-color: rgba(6, 182, 212, 0.15); /* Akzentfarbe mit Transparenz */
-    color: #06b6d4;
-    border-radius: 8px;
-}
-
-/* Der Fokus-Effekt für das angewählte Widget */
-.widget-focus {
-    transform: scale(1.02) !important;
-    box-shadow: 0 0 25px rgba(6, 182, 212, 0.4) !important;
-    border-color: #06b6d4 !important;
-    z-index: 10; /* Bringt es physisch in den Vordergrund */
-    transition: all 0.5s ease-out;
-}
-
-/* Sanfter Übergang für alle Widget-Container */
-.widget-container {
-    transition: all 0.5s ease-out;
-}
-
-/* Dynamische Akzent- und Hover-Stile */
-.btn-primary, .add-event-btn:hover, .play-pause-btn {
-    background-color: var(--accent-color) !important;
-    transition: all 0.2s ease;
-}
-
-.btn-primary:hover, .play-pause-btn:hover {
-    filter: brightness(1.15);
-    box-shadow: 0 0 15px var(--accent-color);
 }
 
 .sidebar-link.active {
     background-color: color-mix(in srgb, var(--accent-color) 20%, transparent) !important;
     color: var(--accent-color) !important;
+    border-radius: 8px;
 }
 
-/* Auswahlrahmen für Farb-Dots */
-.color-dot.active-dot {
-    border-color: #ffffff !important;
-    transform: scale(1.15);
-    box-shadow: 0 0 10px rgba(255,255,255,0.5);
+.widget-focus {
+    transform: scale(1.02) !important;
+    box-shadow: 0 0 25px rgba(6, 182, 212, 0.4) !important;
+    border-color: #06b6d4 !important;
+    z-index: 10;
+    transition: all 0.5s ease-out;
 }
 
-.bg-card.active-bg {
-    border-color: var(--accent-color) !important;
-    box-shadow: 0 0 12px color-mix(in srgb, var(--accent-color) 50%, transparent);
-    background-color: rgba(255, 255, 255, 0.05);
-}
-.bg-card:hover {
-    border-color: rgba(255, 255, 255, 0.3);
+.widget-container {
+    transition: all 0.5s ease-out;
 }
 
-/* Aktiver Kalender-Ansichts-Button (z.B. Woche/Monat/Jahr) in Akzentfarbe */
-.calendar-view-switcher .view-btn.active,
-#financeViewSwitcher .view-btn.active {
-    background-color: var(--accent-color) !important;
-    color: #000 !important;
-    border-color: var(--accent-color) !important;
-    box-shadow: 0 0 12px color-mix(in srgb, var(--accent-color) 60%, transparent) !important;
-}
-
-/* Erzwinge die Akzentfarbe für den aktiven Ansichts-Button (Woche/Monat/Jahr) ohne blaue Reste */
 .calendar-view-switcher .view-btn.active,
 #financeViewSwitcher .view-btn.active {
     background-color: var(--accent-color) !important;
@@ -1226,39 +899,16 @@ body {
     box-shadow: 0 0 15px var(--accent-color) !important;
 }
 
-/* --- RESPONSIVE MODALS & UI ANPASSUNGEN --- */
-
-/* Verhindert, dass Modals über den Bildschirm hinausschießen und macht sie scrollbar */
-.modal-overlay, 
-.modal-container, 
-#eventModal, 
-#shortcutModal, 
-#financeModal, 
-#transactionListModal,
-#settingsModal {
-    /* Falls deine Modals als Overlay aufgebaut sind */
+.bg-card.active-bg {
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 12px color-mix(in srgb, var(--accent-color) 50%, transparent);
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
-/* Universelles Styling für alle Pop-up Modals, damit sie auf Handys & kleinen Laptops nie abgeschnitten werden */
-.modal, .modal-content, .modal-overlay.active {
-    max-height: 90vh; /* Maximal 90% der Bildschirmhöhe */
-    overflow-y: auto;  /* Erzeugt automatisch einen Scrollbalken, wenn der Inhalt zu lang ist */
-    box-sizing: border-box;
-}
-
-/* Speziell für Modal-Inhalte, damit Formulare auf kleinen Displays atmen können */
-.modal-card, .modal-box {
-    width: 100%;
-    max-width: 500px;
-    max-height: 85vh;
-    overflow-y: auto;
-    padding: 20px;
-    margin: auto;
-}
-
-/* --- MEDIA QUERY FÜR SMARTPHONES & KLEINE LAPTOPS --- */
+/* ==========================================================================
+   RESPONSIVE DESIGN FÜR SMARTPHONES & KLEINE LAPTOPS
+   ========================================================================== */
 @media screen and (max-width: 768px) {
-    /* Dashboard-Grid auf kleinen Bildschirmen untereinander anordnen */
     .dashboard-grid, .main-layout {
         display: flex;
         flex-direction: column;
@@ -1266,79 +916,25 @@ body {
         padding: 10px;
     }
 
-    /* Sidebar für Smartphones kompakter machen oder ausblenden */
     .sidebar {
         width: 100%;
         height: auto;
         position: relative;
     }
 
-    /* Widgets passen sich der vollen Bildschirmbreite an */
     .widget-card, .shortcut-card {
         width: 100% !important;
     }
 
-    /* Modals nehmen auf dem Handy fast den ganzen Bildschirm ein, bleiben aber bedienbar */
-    .modal-card, .modal-box {
+    .modal-card {
         width: 95vw;
         max-height: 90vh;
         margin: 10px;
         padding: 15px;
     }
-}
 
-/* --- PERFEKTE MODAL-ANPASSUNG FÜR ALLE BILDSCHIRME --- */
-
-/* Der Hintergrund des Modals füllt den Bildschirm und zentriert den Inhalt */
-.modal-overlay, #eventModal, #shortcutModal, #financeModal, #transactionListModal, #settingsModal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(5, 11, 20, 0.8);
-    display: none; /* Wird per .active auf flex geschaltet */
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-/* Wenn das Modal aktiv ist */
-.modal-overlay.active, #eventModal.active, #shortcutModal.active, #financeModal.active, #transactionListModal.active, #settingsModal.active {
-    display: flex;
-}
-
-/* Der eigentliche Inhalt / die Box des Modals */
-.modal-content, .modal-card, .modal-box, .calendar-modal-content {
-    background: #0f172a; /* Passe das an deine Farbvariante an */
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    width: 100%;
-    max-width: 500px;
-    max-height: 85vh; /* Wichtig: Lässt Platz zum Rand, damit es nie abgeschnitten wird */
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto; /* Erzeugt einen sauberen Scrollbalken IM Modal, falls der Bildschirm zu klein ist */
-    padding: 24px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-    box-sizing: border-box;
-}
-
-/* Speziell für Formular-Inhalte im Modal */
-.modal-content form, .modal-card form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-/* Die Button-Leiste unten im Modal bleibt sauber ausgerichtet */
-.modal-actions, .modal-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
-    padding-top: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    .main-content {
+        margin-left: 0 !important;
+        padding: 20px;
+    }
 }
